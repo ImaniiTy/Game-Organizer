@@ -1,12 +1,8 @@
-import 'dart:developer';
-
-import 'package:game_organizer/services/localStorage.dart';
-import 'package:game_organizer/services/scrapper.dart';
-
+import '/components/c_menu_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
-import '/pages/c_ssttings_view/c_ssttings_view_widget.dart';
+import '/views/c_ssttings_view/c_ssttings_view_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -67,93 +63,14 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                   children: [
                     Expanded(
                       flex: 1,
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        decoration: BoxDecoration(
-                          color: FlutterFlowTheme.of(context).accent4,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            FFButtonWidget(
-                              onPressed: () async {
-                                var realUrl = await Scrapper().getRealDownloadUrl(
-                                    "https://f95zone.to/masked/pixeldrain.com/173478/101121/kcH9uJQbHYgQBKDfpfoMVPMZMjY/7KespZiCmwj4ZB8elFSjUQ/YzFNlD3MrJE75qMyZEQlfKEeWttlEytfF1S9Mi0K9Q1KRn7ryPNMcb4LShUsJYi5");
-                                log("$realUrl");
-                                print('Button pressed ...');
-                              },
-                              text: 'My Games',
-                              options: FFButtonOptions(
-                                width: double.infinity,
-                                height: 40.0,
-                                padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                                iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                color: Colors.transparent,
-                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                      fontFamily: 'Readex Pro',
-                                      color: Colors.white,
-                                    ),
-                                elevation: 3.0,
-                                borderSide: BorderSide(
-                                  color: Colors.transparent,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            FFButtonWidget(
-                              onPressed: () async {
-                                print('Button pressed ...');
-                              },
-                              text: 'Latest Games',
-                              options: FFButtonOptions(
-                                width: double.infinity,
-                                height: 40.0,
-                                padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                                iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                color: Colors.transparent,
-                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                      fontFamily: 'Readex Pro',
-                                      color: Colors.white,
-                                    ),
-                                elevation: 3.0,
-                                borderSide: BorderSide(
-                                  color: Colors.transparent,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                            FFButtonWidget(
-                              onPressed: () {
-                                print('Button pressed ...');
-                              },
-                              text: 'Settings',
-                              options: FFButtonOptions(
-                                width: double.infinity,
-                                height: 40.0,
-                                padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
-                                iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                                color: Colors.transparent,
-                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                      fontFamily: 'Readex Pro',
-                                      color: Colors.white,
-                                    ),
-                                elevation: 3.0,
-                                borderSide: BorderSide(
-                                  color: Colors.transparent,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                          ],
-                        ),
+                      child: wrapWithModel(
+                        model: _model.cMenuModel,
+                        updateCallback: () => setState(() {}),
+                        child: CMenuWidget(),
                       ),
                     ),
                     Expanded(
-                      flex: 4,
+                      flex: 5,
                       child: Padding(
                         padding: EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 8.0),
                         child: Container(
