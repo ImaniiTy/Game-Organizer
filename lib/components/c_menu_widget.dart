@@ -79,7 +79,7 @@ class _CMenuWidgetState extends State<CMenuWidget> {
           Align(
             alignment: AlignmentDirectional(-1.00, 0.00),
             child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 8.0),
+              padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
               child: FFButtonWidget(
                 onPressed: () {
                   print('Button pressed ...');
@@ -94,7 +94,7 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                   height: 40.0,
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                   iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                   color: Colors.transparent,
                   textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                         fontFamily: 'Readex Pro',
@@ -114,7 +114,7 @@ class _CMenuWidgetState extends State<CMenuWidget> {
           Align(
             alignment: AlignmentDirectional(-1.00, 0.00),
             child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 8.0),
+              padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
               child: FFButtonWidget(
                 onPressed: () {
                   print('Button pressed ...');
@@ -129,7 +129,7 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                   height: 40.0,
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                   iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                   color: Colors.transparent,
                   textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                         fontFamily: 'Readex Pro',
@@ -149,7 +149,7 @@ class _CMenuWidgetState extends State<CMenuWidget> {
           Align(
             alignment: AlignmentDirectional(-1.00, 0.00),
             child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 8.0),
+              padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
               child: FFButtonWidget(
                 onPressed: () {
                   print('Button pressed ...');
@@ -164,7 +164,7 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                   height: 40.0,
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                   iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
                   color: Colors.transparent,
                   textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                         fontFamily: 'Readex Pro',
