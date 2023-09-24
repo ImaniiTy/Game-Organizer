@@ -103,7 +103,6 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             ),
                             FFButtonWidget(
                               onPressed: () async {
-                                await LocalStorage().setItem("teste", "testecontent");
                                 print('Button pressed ...');
                               },
                               text: 'Latest Games',
