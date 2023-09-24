@@ -47,7 +47,8 @@ class _CMenuWidgetState extends State<CMenuWidget> {
       ),
       child: Column(
         mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
             width: MediaQuery.sizeOf(context).width * 1.0,
@@ -75,99 +76,108 @@ class _CMenuWidgetState extends State<CMenuWidget> {
               color: Color(0x15FFFFFF),
             ),
           ),
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
-            child: FFButtonWidget(
-              onPressed: () {
-                print('Button pressed ...');
-              },
-              text: 'My Games',
-              icon: Icon(
-                Icons.home,
-                color: Color(0x2DCACACA),
-                size: 15.0,
-              ),
-              options: FFButtonOptions(
-                height: 40.0,
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
-                iconPadding:
-                    EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
-                color: Colors.transparent,
-                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                      fontFamily: 'Readex Pro',
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    ),
-                elevation: 0.0,
-                borderSide: BorderSide(
-                  color: Colors.transparent,
-                  width: 0.0,
+          Align(
+            alignment: AlignmentDirectional(-1.00, 0.00),
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 8.0),
+              child: FFButtonWidget(
+                onPressed: () {
+                  print('Button pressed ...');
+                },
+                text: 'My Games',
+                icon: Icon(
+                  Icons.home,
+                  color: Color(0x2DCACACA),
+                  size: 15.0,
                 ),
-                borderRadius: BorderRadius.circular(8.0),
+                options: FFButtonOptions(
+                  height: 40.0,
+                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  iconPadding:
+                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
+                  color: Colors.transparent,
+                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                        fontFamily: 'Readex Pro',
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                  elevation: 0.0,
+                  borderSide: BorderSide(
+                    color: Colors.transparent,
+                    width: 0.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
-            child: FFButtonWidget(
-              onPressed: () {
-                print('Button pressed ...');
-              },
-              text: 'Latest Games',
-              icon: Icon(
-                Icons.search,
-                color: Color(0x2DCACACA),
-                size: 15.0,
-              ),
-              options: FFButtonOptions(
-                height: 40.0,
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
-                iconPadding:
-                    EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
-                color: Colors.transparent,
-                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                      fontFamily: 'Readex Pro',
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    ),
-                elevation: 0.0,
-                borderSide: BorderSide(
-                  color: Colors.transparent,
-                  width: 0.0,
+          Align(
+            alignment: AlignmentDirectional(-1.00, 0.00),
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 8.0),
+              child: FFButtonWidget(
+                onPressed: () {
+                  print('Button pressed ...');
+                },
+                text: 'Latest Games',
+                icon: Icon(
+                  Icons.search,
+                  color: Color(0x2DCACACA),
+                  size: 15.0,
                 ),
-                borderRadius: BorderRadius.circular(8.0),
+                options: FFButtonOptions(
+                  height: 40.0,
+                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  iconPadding:
+                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
+                  color: Colors.transparent,
+                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                        fontFamily: 'Readex Pro',
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                  elevation: 0.0,
+                  borderSide: BorderSide(
+                    color: Colors.transparent,
+                    width: 0.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
               ),
             ),
           ),
-          Padding(
-            padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
-            child: FFButtonWidget(
-              onPressed: () {
-                print('Button pressed ...');
-              },
-              text: 'Settings',
-              icon: Icon(
-                Icons.settings,
-                color: Color(0x2DCACACA),
-                size: 15.0,
-              ),
-              options: FFButtonOptions(
-                height: 40.0,
-                padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 0.0),
-                iconPadding:
-                    EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
-                color: Colors.transparent,
-                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                      fontFamily: 'Readex Pro',
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    ),
-                elevation: 0.0,
-                borderSide: BorderSide(
-                  color: Colors.transparent,
-                  width: 0.0,
+          Align(
+            alignment: AlignmentDirectional(-1.00, 0.00),
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 0.0, 8.0),
+              child: FFButtonWidget(
+                onPressed: () {
+                  print('Button pressed ...');
+                },
+                text: 'Settings',
+                icon: Icon(
+                  Icons.settings,
+                  color: Color(0x2DCACACA),
+                  size: 15.0,
                 ),
-                borderRadius: BorderRadius.circular(8.0),
+                options: FFButtonOptions(
+                  height: 40.0,
+                  padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                  iconPadding:
+                      EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 16.0, 0.0),
+                  color: Colors.transparent,
+                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                        fontFamily: 'Readex Pro',
+                        color: Colors.white,
+                        fontSize: 16.0,
+                      ),
+                  elevation: 0.0,
+                  borderSide: BorderSide(
+                    color: Colors.transparent,
+                    width: 0.0,
+                  ),
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
               ),
             ),
           ),
