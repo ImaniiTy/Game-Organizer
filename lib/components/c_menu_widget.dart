@@ -86,15 +86,15 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                 },
                 text: 'My Games',
                 icon: Icon(
-                  Icons.home,
+                  Icons.home_sharp,
                   color: Color(0x2DCACACA),
-                  size: 15.0,
+                  size: 28.0,
                 ),
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                   iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
                   color: Colors.transparent,
                   textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                         fontFamily: 'Readex Pro',
@@ -121,15 +121,15 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                 },
                 text: 'Latest Games',
                 icon: Icon(
-                  Icons.search,
+                  Icons.search_rounded,
                   color: Color(0x2DCACACA),
-                  size: 15.0,
+                  size: 28.0,
                 ),
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                   iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
                   color: Colors.transparent,
                   textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                         fontFamily: 'Readex Pro',
@@ -158,13 +158,13 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                 icon: Icon(
                   Icons.settings,
                   color: Color(0x2DCACACA),
-                  size: 15.0,
+                  size: 28.0,
                 ),
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                   iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(16.0, 0.0, 16.0, 0.0),
+                      EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
                   color: Colors.transparent,
                   textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                         fontFamily: 'Readex Pro',
