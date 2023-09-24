@@ -1,3 +1,8 @@
+import 'dart:developer';
+
+import 'package:game_organizer/services/localStorage.dart';
+import 'package:game_organizer/services/scrapper.dart';
+
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -76,21 +81,20 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           mainAxisSize: MainAxisSize.max,
                           children: [
                             FFButtonWidget(
-                              onPressed: () {
+                              onPressed: () async {
+                                var realUrl = await Scrapper().getRealDownloadUrl(
+                                    "https://f95zone.to/masked/pixeldrain.com/173478/101121/kcH9uJQbHYgQBKDfpfoMVPMZMjY/7KespZiCmwj4ZB8elFSjUQ/YzFNlD3MrJE75qMyZEQlfKEeWttlEytfF1S9Mi0K9Q1KRn7ryPNMcb4LShUsJYi5");
+                                log("$realUrl");
                                 print('Button pressed ...');
                               },
                               text: 'My Games',
                               options: FFButtonOptions(
                                 width: double.infinity,
                                 height: 40.0,
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    24.0, 0.0, 24.0, 0.0),
-                                iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 0.0, 0.0),
+                                padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                                iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                                 color: Colors.transparent,
-                                textStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .override(
+                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                                       fontFamily: 'Readex Pro',
                                       color: Colors.white,
                                     ),
@@ -103,21 +107,18 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                               ),
                             ),
                             FFButtonWidget(
-                              onPressed: () {
+                              onPressed: () async {
+                                await LocalStorage().setItem("teste", "testecontent");
                                 print('Button pressed ...');
                               },
                               text: 'Latest Games',
                               options: FFButtonOptions(
                                 width: double.infinity,
                                 height: 40.0,
-                                padding: EdgeInsetsDirectional.fromSTEB(
-                                    24.0, 0.0, 24.0, 0.0),
-                                iconPadding: EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 0.0, 0.0, 0.0),
+                                padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                                iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
                                 color: Colors.transparent,
-                                textStyle: FlutterFlowTheme.of(context)
-                                    .titleSmall
-                                    .override(
+                                textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                                       fontFamily: 'Readex Pro',
                                       color: Colors.white,
                                     ),
@@ -145,16 +146,13 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           width: 100.0,
                           height: 100.0,
                           decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
+                            color: FlutterFlowTheme.of(context).secondaryBackground,
                           ),
                           child: Padding(
-                            padding: EdgeInsetsDirectional.fromSTEB(
-                                8.0, 8.0, 8.0, 8.0),
+                            padding: EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 8.0),
                             child: GridView(
                               padding: EdgeInsets.zero,
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                                 crossAxisCount: 3,
                                 crossAxisSpacing: 10.0,
                                 mainAxisSpacing: 10.0,
@@ -176,16 +174,11 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                       Expanded(
                                         flex: 4,
                                         child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
+                                          borderRadius: BorderRadius.circular(8.0),
                                           child: Image.network(
                                             'https://picsum.photos/seed/842/600',
-                                            width: MediaQuery.sizeOf(context)
-                                                    .width *
-                                                1.0,
-                                            height: MediaQuery.sizeOf(context)
-                                                    .height *
-                                                1.0,
+                                            width: MediaQuery.sizeOf(context).width * 1.0,
+                                            height: MediaQuery.sizeOf(context).height * 1.0,
                                             fit: BoxFit.cover,
                                           ),
                                         ),
@@ -194,9 +187,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                                         flex: 3,
                                         child: Container(
                                           width: double.infinity,
-                                          height: MediaQuery.sizeOf(context)
-                                                  .height *
-                                              1.0,
+                                          height: MediaQuery.sizeOf(context).height * 1.0,
                                           decoration: BoxDecoration(
                                             color: Color(0x0014181B),
                                           ),
