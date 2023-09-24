@@ -14,11 +14,12 @@ class Scrapper {
   Browser? _browser;
 
   Future<void> init() async {
-    _browser = await puppeteer.launch();
+    // _browser = await puppeteer.launch();
   }
 
   Future<String?> getRealDownloadUrl(String url) async {
-    var page = await _browser!.newPage();
+    var browser = await puppeteer.launch();
+    var page = await browser.newPage();
     await stopRedirections(page);
     await setPageCookies(page);
     await page.goto(url);
@@ -29,13 +30,20 @@ class Scrapper {
       uri = Uri.parse(await parseMaskedLink(page));
     }
 
+    String? result;
     switch (uri.host) {
       case "gofile.io":
-        return await fromGoFile(page);
+        result = await fromGoFile(page);
+        break;
       case "pixeldrain.com":
-        return fromPixeldrain(uri);
+        result = fromPixeldrain(uri);
+        break;
       default:
     }
+
+    browser.close();
+
+    return result;
   }
 
   Future<String?> fromGoFile(Page page) async {

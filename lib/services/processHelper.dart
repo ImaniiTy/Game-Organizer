@@ -30,7 +30,9 @@ class ProcessHelper {
     Uri uri = Uri.parse(url);
     String referer = getReferer(uri);
 
-    var sourceProcess = await runCommand(args: "-d ${LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER} ${uri.toString()}");
+    var sourceProcess = await runCommand(
+      args: "-d ${LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER} -x 20 -s 20 ${uri.toString()}",
+    );
 
     return DownloadProcess(source: sourceProcess);
   }
