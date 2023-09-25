@@ -41,7 +41,7 @@ class _CMyGamesViewWidgetState extends State<CMyGamesViewWidget> {
       width: MediaQuery.sizeOf(context).width * 1.0,
       height: MediaQuery.sizeOf(context).height * 1.0,
       decoration: BoxDecoration(
-        color: FlutterFlowTheme.of(context).secondaryBackground,
+        color: Color(0x0014181B),
       ),
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 8.0),
