@@ -1,6 +1,9 @@
+import 'package:game_organizer/services/localStorage.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_win_floating/webview.dart';
+
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -16,6 +19,9 @@ class CWebViewWidget extends StatefulWidget {
 
 class _CWebViewWidgetState extends State<CWebViewWidget> {
   late CWebViewModel _model;
+  late WinWebViewController? _webviewController;
+  late WindowsPlatformWebViewCookieManager _webViewCookieManager =
+      WindowsPlatformWebViewCookieManager(PlatformWebViewCookieManagerCreationParams());
 
   @override
   void setState(VoidCallback callback) {
@@ -27,12 +33,39 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => CWebViewModel());
+    _webviewController = WinWebViewController("/userDataTemp");
+    _webviewController!.setJavaScriptMode(JavaScriptMode.unrestricted);
+    _webviewController!.setNavigationDelegate(WinNavigationDelegate(
+      onNavigationRequest: (request) {
+        return NavigationDecision.navigate;
+      },
+      onPageStarted: (url) async {
+        print("onPageStarted: $url");
+        var cookies = await _webviewController!.runJavaScriptReturningResult('document.cookie');
+        if (!cookies.toString().contains("xf_session")) {
+          var userSession = LocalStorage().getItem("cookies").firstWhere((cookie) => cookie["name"] == "xf_session");
+          await _webviewController!
+              .runJavaScriptReturningResult('document.cookie = "xf_session=${userSession["value"]};" + document.cookie');
+          _webviewController!.reload();
+        }
+      },
+      onPageFinished: (url) {
+        // _webviewController!
+        //     .runJavaScriptReturningResult('document.cookie = "xf_session=3N8gaDLNywymFfDOHTNZZsV_k8tbz3h0;" + document.cookie')
+        //     .then((value) {
+        //   // _webviewController!.reload();
+        // });
+      },
+      onWebResourceError: (error) => print("onWebResourceError: ${error.description}"),
+    ));
+    _webviewController!.loadRequest(Uri.parse("https://f95zone.to/sam/latest_alpha/"));
   }
 
   @override
   void dispose() {
     _model.maybeDispose();
-
+    _webviewController?.dispose();
+    _webviewController = null;
     super.dispose();
   }
 
@@ -44,13 +77,8 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
       decoration: BoxDecoration(
         color: FlutterFlowTheme.of(context).secondaryBackground,
       ),
-      child: FlutterFlowWebView(
-        content: 'https://f95zone.to/',
-        bypass: false,
-        width: MediaQuery.sizeOf(context).width * 1.0,
-        height: MediaQuery.sizeOf(context).height * 1.0,
-        verticalScroll: false,
-        horizontalScroll: false,
+      child: WinWebViewWidget(
+        controller: _webviewController!,
       ),
     );
   }

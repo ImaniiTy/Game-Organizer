@@ -1,3 +1,6 @@
+import 'package:game_organizer/services/navigation.dart';
+import 'package:game_organizer/views/c_my_games_view/c_my_games_view_widget.dart';
+
 import '/components/c_menu_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -69,10 +72,18 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           decoration: BoxDecoration(
                             color: FlutterFlowTheme.of(context).primaryBackground,
                           ),
-                          child: wrapWithModel(
-                            model: _model.cSsttingsViewModel,
-                            updateCallback: () => setState(() {}),
-                            child: CSsttingsViewWidget(),
+                          child: StreamBuilder<Widget>(
+                            stream: Navigation().navigationStream,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData) {
+                                return snapshot.data!;
+                              }
+                              return wrapWithModel<CMyGamesViewModel>(
+                                model: createModel(context, () => CMyGamesViewModel()),
+                                updateCallback: () => setState(() {}),
+                                child: CMyGamesViewWidget(),
+                              );
+                            },
                           ),
                         ),
                       ),

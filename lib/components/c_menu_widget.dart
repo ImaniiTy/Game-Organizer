@@ -1,3 +1,8 @@
+import 'package:game_organizer/services/navigation.dart';
+import 'package:game_organizer/views/c_my_games_view/c_my_games_view_widget.dart';
+import 'package:game_organizer/views/c_ssttings_view/c_ssttings_view_widget.dart';
+import 'package:game_organizer/views/c_web_view/c_web_view_widget.dart';
+
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -82,7 +87,13 @@ class _CMenuWidgetState extends State<CMenuWidget> {
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
               child: FFButtonWidget(
                 onPressed: () {
-                  print('Button pressed ...');
+                  Navigation().goTo(() {
+                    return wrapWithModel<CMyGamesViewModel>(
+                      model: createModel(context, () => CMyGamesViewModel()),
+                      updateCallback: () => setState(() {}),
+                      child: CMyGamesViewWidget(),
+                    );
+                  });
                 },
                 text: 'My Games',
                 icon: Icon(
@@ -93,8 +104,7 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
+                  iconPadding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
                   color: Colors.transparent,
                   textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                         fontFamily: 'Readex Pro',
@@ -117,7 +127,13 @@ class _CMenuWidgetState extends State<CMenuWidget> {
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
               child: FFButtonWidget(
                 onPressed: () {
-                  print('Button pressed ...');
+                  Navigation().goTo(() {
+                    return wrapWithModel<CWebViewModel>(
+                      model: createModel(context, () => CWebViewModel()),
+                      updateCallback: () => setState(() {}),
+                      child: CWebViewWidget(),
+                    );
+                  });
                 },
                 text: 'Latest Games',
                 icon: Icon(
@@ -128,8 +144,7 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
+                  iconPadding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
                   color: Colors.transparent,
                   textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                         fontFamily: 'Readex Pro',
@@ -152,7 +167,13 @@ class _CMenuWidgetState extends State<CMenuWidget> {
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
               child: FFButtonWidget(
                 onPressed: () {
-                  print('Button pressed ...');
+                  Navigation().goTo(() {
+                    return wrapWithModel<CSsttingsViewModel>(
+                      model: createModel(context, () => CSsttingsViewModel()),
+                      updateCallback: () => setState(() {}),
+                      child: CSsttingsViewWidget(),
+                    );
+                  });
                 },
                 text: 'Settings',
                 icon: Icon(
@@ -163,8 +184,7 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                 options: FFButtonOptions(
                   height: 40.0,
                   padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                  iconPadding:
-                      EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
+                  iconPadding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 12.0, 0.0),
                   color: Colors.transparent,
                   textStyle: FlutterFlowTheme.of(context).titleSmall.override(
                         fontFamily: 'Readex Pro',
