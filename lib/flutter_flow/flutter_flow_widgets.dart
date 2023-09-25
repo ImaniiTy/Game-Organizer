@@ -23,6 +23,7 @@ class FFButtonOptions {
     this.hoverTextColor,
     this.hoverElevation,
     this.maxLines,
+    this.alignment = Alignment.centerLeft,
   });
 
   final TextStyle? textStyle;
@@ -44,6 +45,7 @@ class FFButtonOptions {
   final BorderSide? hoverBorderSide;
   final Color? hoverTextColor;
   final double? hoverElevation;
+  final Alignment? alignment;
 }
 
 class FFButtonWidget extends StatefulWidget {
@@ -180,7 +182,7 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
                   color: widget.options.iconColor ?? widget.options.textStyle!.color,
                 ),
           ),
-          label: Align(alignment: Alignment.centerLeft, child: textWidget),
+          label: widget.options.alignment != null ? Align(alignment: widget.options.alignment!, child: textWidget) : textWidget,
           onPressed: onPressed,
           style: style,
         ),

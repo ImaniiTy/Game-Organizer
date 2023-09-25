@@ -236,6 +236,7 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                         width: 0.0,
                       ),
                       borderRadius: BorderRadius.circular(8.0),
+                      alignment: null,
                     ),
                   ),
                 ),
