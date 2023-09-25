@@ -70,7 +70,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           width: double.infinity,
                           height: double.infinity,
                           decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context).primaryBackground,
+                            color: FlutterFlowTheme.of(context).secondaryBackground,
                           ),
                           child: StreamBuilder<Widget>(
                             stream: Navigation().navigationStream,

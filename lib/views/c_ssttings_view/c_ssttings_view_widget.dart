@@ -42,109 +42,113 @@ class _CSsttingsViewWidgetState extends State<CSsttingsViewWidget> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 8.0),
-      child: Container(
-        width: MediaQuery.sizeOf(context).width * 1.0,
-        height: MediaQuery.sizeOf(context).height * 1.0,
-        decoration: BoxDecoration(
-          color: Color(0x0014181B),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Download Folder',
-              textAlign: TextAlign.start,
-              style: FlutterFlowTheme.of(context).bodyMedium,
-            ),
-            TextFormField(
-              controller: _model.textController1,
-              autofocus: true,
-              obscureText: false,
-              decoration: InputDecoration(
-                labelStyle: FlutterFlowTheme.of(context).labelMedium,
-                hintText: '/temp',
-                hintStyle: FlutterFlowTheme.of(context).labelMedium,
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).alternate,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).primary,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).error,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).error,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-              ),
-              style: FlutterFlowTheme.of(context).bodyMedium,
-              validator: _model.textController1Validator.asValidator(context),
-            ),
-            Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
-              child: Text(
-                'Games Folder',
+      child: Material(
+        color: Colors.transparent,
+        elevation: 0.0,
+        child: Container(
+          width: MediaQuery.sizeOf(context).width * 1.0,
+          height: MediaQuery.sizeOf(context).height * 1.0,
+          decoration: BoxDecoration(
+            color: FlutterFlowTheme.of(context).secondaryBackground,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Download Folder',
+                textAlign: TextAlign.start,
                 style: FlutterFlowTheme.of(context).bodyMedium,
               ),
-            ),
-            TextFormField(
-              controller: _model.textController2,
-              autofocus: true,
-              obscureText: false,
-              decoration: InputDecoration(
-                labelStyle: FlutterFlowTheme.of(context).labelMedium,
-                hintText: '/games',
-                hintStyle: FlutterFlowTheme.of(context).labelMedium,
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).alternate,
-                    width: 2.0,
+              TextFormField(
+                controller: _model.textController1,
+                autofocus: true,
+                obscureText: false,
+                decoration: InputDecoration(
+                  labelStyle: FlutterFlowTheme.of(context).labelMedium,
+                  hintText: '/temp',
+                  hintStyle: FlutterFlowTheme.of(context).labelMedium,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).alternate,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                  borderRadius: BorderRadius.circular(8.0),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).primary,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).error,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).error,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
                 ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).primary,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                errorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).error,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: FlutterFlowTheme.of(context).error,
-                    width: 2.0,
-                  ),
-                  borderRadius: BorderRadius.circular(8.0),
+                style: FlutterFlowTheme.of(context).bodyMedium,
+                validator: _model.textController1Validator.asValidator(context),
+              ),
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                child: Text(
+                  'Games Folder',
+                  style: FlutterFlowTheme.of(context).bodyMedium,
                 ),
               ),
-              style: FlutterFlowTheme.of(context).bodyMedium,
-              validator: _model.textController2Validator.asValidator(context),
-            ),
-          ],
+              TextFormField(
+                controller: _model.textController2,
+                autofocus: true,
+                obscureText: false,
+                decoration: InputDecoration(
+                  labelStyle: FlutterFlowTheme.of(context).labelMedium,
+                  hintText: '/games',
+                  hintStyle: FlutterFlowTheme.of(context).labelMedium,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).alternate,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).primary,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).error,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).error,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                style: FlutterFlowTheme.of(context).bodyMedium,
+                validator: _model.textController2Validator.asValidator(context),
+              ),
+            ],
+          ),
         ),
       ),
     );
