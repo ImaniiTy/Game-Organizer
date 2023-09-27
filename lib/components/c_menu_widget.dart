@@ -196,8 +196,8 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
                           child: FFButtonWidget(
-                            onPressed: () {
-                              print('Button pressed ...');
+                            onPressed: () async {
+                              await _model.fetchGameInfo();
                             },
                             text: 'Add Game',
                             icon: Icon(

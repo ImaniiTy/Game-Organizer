@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:game_organizer/services/localStorage.dart';
+import 'package:game_organizer/services/sessionManager.dart';
 
 const String USER_AGENT =
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 OPR/91.0.4516.106";
@@ -20,26 +22,31 @@ class ProcessHelper {
 
   Future<Process> runCommand({String dest = "", String userAgent = "", String args = "", String program = "aria2c"}) async {
     var argsList = args.split(" ");
-    argsList[argsList.indexWhere((element) => element == "%{dest}")] = dest;
-    argsList[argsList.indexWhere((element) => element == "%{userAgent}")] = userAgent;
+    // argsList[argsList.indexWhere((element) => element == "%{dest}")] = dest;
+    // argsList[argsList.indexWhere((element) => element == "%{userAgent}")] = userAgent;
     print("Run with command: $program ${argsList.join(' ')}");
     return await Process.start(program, argsList);
   }
 
-  Future<DownloadProcess> downloadFile({required String url, required String fileName}) async {
+  Future<DownloadProcess> downloadFile({required String url, String? fileName}) async {
     Uri uri = Uri.parse(url);
-    String referer = getReferer(uri);
+    String? referer = getReferer(uri);
+    String cookies = "cookie:${SessionManager().getSessionAsString()}";
 
     var sourceProcess = await runCommand(
-      args: "-d ${LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER} -x 20 -s 20 ${uri.toString()}",
+      args: '-d ${LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER} --header=$cookies -x 16 -s 16 ${uri.toString()}',
     );
 
     return DownloadProcess(source: sourceProcess);
   }
 
-  String getReferer(Uri uri) {
-    List<String> origin = uri.host.split(".").reversed.toList();
-    return "https://${origin[1]}.${origin[0]}";
+  String? getReferer(Uri uri) {
+    try {
+      List<String> origin = uri.host.split(".").reversed.toList();
+      return "https://${origin[1]}.${origin[0]}";
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   // static Future<DownloadProcess> downloadM3u8({required String url, required String fileName}) async {

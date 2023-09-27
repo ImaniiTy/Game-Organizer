@@ -10,8 +10,6 @@ import 'package:provider/provider.dart';
 import 'c_web_view_model.dart';
 export 'c_web_view_model.dart';
 
-WinWebViewController? webviewController;
-
 class CWebViewWidget extends StatefulWidget {
   const CWebViewWidget({Key? key}) : super(key: key);
 

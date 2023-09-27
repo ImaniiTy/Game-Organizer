@@ -1,3 +1,9 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:flutter/services.dart';
+import 'package:game_organizer/services/localStorage.dart';
+
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -27,4 +33,13 @@ class CSsttingsViewModel extends FlutterFlowModel {
   /// Action blocks are added here.
 
   /// Additional helper methods are added here.
+  Future<void> saveFromClipboard() async {
+    ClipboardData? clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
+
+    try {
+      LocalStorage().setItem(Collections.cookies.name, json.decode(clipboardData?.text ?? "{}"));
+    } catch (e) {
+      log("Failed to decode ${clipboardData?.text}");
+    }
+  }
 }

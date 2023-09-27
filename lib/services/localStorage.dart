@@ -1,5 +1,7 @@
 import 'package:localstorage/localstorage.dart' as storage;
 
+enum Collections { cookies }
+
 class LocalStorage {
   static final LocalStorage _instance = LocalStorage._internal();
 
@@ -19,7 +21,11 @@ class LocalStorage {
     return localStorage.getItem(key);
   }
 
-  Future<void> setItem(String key, String value) async {
-    await localStorage.setItem(key, value);
+  Future<void> setItem(
+    String key,
+    dynamic value, [
+    Object Function(Object)? toEncodable,
+  ]) async {
+    await localStorage.setItem(key, value, toEncodable);
   }
 }

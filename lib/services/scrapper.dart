@@ -1,6 +1,8 @@
 import 'package:chaleno/chaleno.dart';
 import 'package:game_organizer/services/localStorage.dart';
+import 'package:game_organizer/services/sessionManager.dart';
 import 'package:puppeteer/puppeteer.dart';
+import 'package:http/http.dart' as http;
 
 class Scrapper {
   static final Scrapper _instance = Scrapper._internal();
@@ -13,8 +15,23 @@ class Scrapper {
 
   Browser? _browser;
 
+  static List<String> supportedHosts = ["gofile.io", "pixeldrain.com"];
+
   Future<void> init() async {
     // _browser = await puppeteer.launch();
+  }
+
+  Future<Parser?> getPageParser(String url) async {
+    final response = await http.get(Uri.parse(url), headers: SessionManager().getSessionAsMap());
+    if (response.statusCode == 200) {
+      return Parser(response.body);
+    }
+  }
+
+  List<String?> getSupportedHostsFrommPage(Parser parser) {
+    var mainBody = parser.querySelector(".bbWrapper");
+    var urlList = mainBody.querySelectorAll("a.link")?.where((link) => supportedHosts.any((host) => link.href!.contains(host)));
+    return urlList?.map((e) => e.href).toList() ?? [];
   }
 
   Future<String?> getRealDownloadUrl(String url) async {
@@ -49,6 +66,10 @@ class Scrapper {
   Future<String?> fromGoFile(Page page) async {
     await page.waitForSelector(".contentName");
     var pageContent = await page.content;
+    var cookies = await page.cookies();
+    if (cookies.isNotEmpty) {
+      SessionManager().gofileUserSession = "${cookies[0].name}=${cookies[0].value}";
+    }
 
     page.close();
     var parser = Parser(pageContent);
@@ -56,7 +77,7 @@ class Scrapper {
   }
 
   String fromPixeldrain(Uri uri) {
-    return "pixeldrain.com/api/file/${uri.pathSegments.last}?download";
+    return "https://pixeldrain.com/api/file/${uri.pathSegments.last}?download";
   }
 
   Future<String> parseMaskedLink(Page page) async {
