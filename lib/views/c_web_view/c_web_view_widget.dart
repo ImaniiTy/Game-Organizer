@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 import 'c_web_view_model.dart';
 export 'c_web_view_model.dart';
 
+WinWebViewController? webviewController;
+
 class CWebViewWidget extends StatefulWidget {
   const CWebViewWidget({Key? key}) : super(key: key);
 
@@ -19,9 +21,6 @@ class CWebViewWidget extends StatefulWidget {
 
 class _CWebViewWidgetState extends State<CWebViewWidget> {
   late CWebViewModel _model;
-  late WinWebViewController? _webviewController;
-  late WindowsPlatformWebViewCookieManager _webViewCookieManager =
-      WindowsPlatformWebViewCookieManager(PlatformWebViewCookieManagerCreationParams());
 
   @override
   void setState(VoidCallback callback) {
@@ -33,20 +32,20 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => CWebViewModel());
-    _webviewController = WinWebViewController("/userDataTemp");
-    _webviewController!.setJavaScriptMode(JavaScriptMode.unrestricted);
-    _webviewController!.setNavigationDelegate(WinNavigationDelegate(
+    webviewController = WinWebViewController("/userDataTemp");
+    webviewController!.setJavaScriptMode(JavaScriptMode.unrestricted);
+    webviewController!.setNavigationDelegate(WinNavigationDelegate(
       onNavigationRequest: (request) {
         return NavigationDecision.navigate;
       },
       onPageStarted: (url) async {
         print("onPageStarted: $url");
-        var cookies = await _webviewController!.runJavaScriptReturningResult('document.cookie');
+        var cookies = await webviewController!.runJavaScriptReturningResult('document.cookie');
         if (!cookies.toString().contains("xf_session")) {
           var userSession = LocalStorage().getItem("cookies").firstWhere((cookie) => cookie["name"] == "xf_session");
-          await _webviewController!
+          await webviewController!
               .runJavaScriptReturningResult('document.cookie = "xf_session=${userSession["value"]};" + document.cookie');
-          _webviewController!.reload();
+          webviewController!.reload();
         }
       },
       onPageFinished: (url) {
@@ -58,14 +57,14 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
       },
       onWebResourceError: (error) => print("onWebResourceError: ${error.description}"),
     ));
-    _webviewController!.loadRequest(Uri.parse("https://f95zone.to/sam/latest_alpha/"));
+    webviewController!.loadRequest(Uri.parse("https://f95zone.to/sam/latest_alpha/"));
   }
 
   @override
   void dispose() {
     _model.maybeDispose();
-    _webviewController?.dispose();
-    _webviewController = null;
+    webviewController?.dispose();
+    webviewController = null;
     super.dispose();
   }
 
@@ -78,7 +77,7 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
         color: FlutterFlowTheme.of(context).secondaryBackground,
       ),
       child: WinWebViewWidget(
-        controller: _webviewController!,
+        controller: webviewController!,
       ),
     );
   }
