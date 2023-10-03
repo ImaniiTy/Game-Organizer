@@ -1,3 +1,7 @@
+import 'package:game_organizer/services/coreService.dart';
+import 'package:game_organizer/services/navigation/navigation.dart';
+import 'package:game_organizer/services/scrapper.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_win_floating/webview.dart';
 
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -19,4 +23,15 @@ class CWebViewModel extends FlutterFlowModel {
   /// Action blocks are added here.
 
   /// Additional helper methods are added here.
+  Future<NavigationDecision> onNavigationRequest(WinWebViewController webviewController, NavigationRequest request) async {
+    var currentUrl = await webviewController.currentUrl() ?? "";
+    bool isADownloadUrl = Scrapper.supportedHosts.any((element) => request.url.contains(element));
+    if (currentUrl.contains("f95zone.to/threads") && isADownloadUrl) {
+      CoreService().addGameAndStartDownload(currentUrl, request.url);
+      // Navigation().goTo("/MyGames");
+      return NavigationDecision.prevent;
+    } else {
+      return NavigationDecision.navigate;
+    }
+  }
 }

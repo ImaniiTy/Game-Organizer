@@ -1,6 +1,6 @@
 import 'package:localstorage/localstorage.dart' as storage;
 
-enum Collections { cookies }
+enum Collections { cookies, games }
 
 class LocalStorage {
   static final LocalStorage _instance = LocalStorage._internal();

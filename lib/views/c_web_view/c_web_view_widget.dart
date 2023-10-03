@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:game_organizer/services/localStorage.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_win_floating/webview.dart';
@@ -33,8 +35,8 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
     webviewController = WinWebViewController("/userDataTemp");
     webviewController!.setJavaScriptMode(JavaScriptMode.unrestricted);
     webviewController!.setNavigationDelegate(WinNavigationDelegate(
-      onNavigationRequest: (request) {
-        return NavigationDecision.navigate;
+      onNavigationRequest: (request) async {
+        return await _model.onNavigationRequest(webviewController!, request);
       },
       onPageStarted: (url) async {
         print("onPageStarted: $url");

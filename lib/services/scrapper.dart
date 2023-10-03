@@ -1,4 +1,5 @@
 import 'package:chaleno/chaleno.dart';
+import 'package:game_organizer/models/gameInfo.model.dart';
 import 'package:game_organizer/services/localStorage.dart';
 import 'package:game_organizer/services/sessionManager.dart';
 import 'package:puppeteer/puppeteer.dart';
@@ -26,6 +27,21 @@ class Scrapper {
     if (response.statusCode == 200) {
       return Parser(response.body);
     }
+  }
+
+  GameInfoModel extractGameInfo(Parser parser) {
+    var gameInfoJson = <String, dynamic>{};
+    gameInfoJson["engine"] = parser.querySelector(".p-title-value span").text;
+
+    RegExp exp = RegExp(r'(.+)\[(.+)\].+\[(.+)\]');
+    var titleMaches = exp.firstMatch(parser.querySelector(".p-title-value").text!)!.groups([1, 2, 3]);
+    gameInfoJson["title"] = titleMaches[0];
+    gameInfoJson["version"] = titleMaches[1];
+    gameInfoJson["author"] = titleMaches[2];
+
+    gameInfoJson["thumbnailUrl"] = parser.querySelector(".bbWrapper img").src;
+
+    return GameInfoModel.fromMap(gameInfoJson);
   }
 
   List<String?> getSupportedHostsFrommPage(Parser parser) {
