@@ -1,12 +1,12 @@
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import '/flutter_flow/flutter_flow_web_view.dart';
-import 'c_web_view_widget.dart' show CWebViewWidget;
+import 'c_game_card_widget.dart' show CGameCardWidget;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-class CWebViewModel extends FlutterFlowModel<CWebViewWidget> {
+class CGameCardModel extends FlutterFlowModel<CGameCardWidget> {
   /// Initialization and disposal methods.
 
   void initState(BuildContext context) {}
