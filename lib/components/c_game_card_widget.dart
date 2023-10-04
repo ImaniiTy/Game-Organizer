@@ -1,3 +1,5 @@
+import 'package:game_organizer/models/gameInfo.model.dart';
+
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -6,9 +8,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'c_game_card_model.dart';
 export 'c_game_card_model.dart';
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 
 class CGameCardWidget extends StatefulWidget {
-  const CGameCardWidget({Key? key}) : super(key: key);
+  const CGameCardWidget({Key? key, required this.gameInfoModel}) : super(key: key);
+
+  final GameInfoModel gameInfoModel;
 
   @override
   _CGameCardWidgetState createState() => _CGameCardWidgetState();
@@ -36,6 +41,21 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
     super.dispose();
   }
 
+  Color getEngineColor(String engine) {
+    switch (engine) {
+      case "Unity":
+        return Color(0xFFFE5901);
+      case "RPGM":
+        return Color(0xFF2196f3);
+      case "Ren'Py":
+        return Color(0xFFB069E8);
+      case "Others":
+        return Color(0xFF8bc34a);
+      default:
+        return FlutterFlowTheme.of(context).secondaryBackground;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -54,8 +74,8 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                 flex: 4,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
-                    'https://picsum.photos/seed/842/600',
+                  child: FastCachedImage(
+                    url: widget.gameInfoModel.thumbnailUrl ?? "",
                     width: MediaQuery.sizeOf(context).width * 1.0,
                     height: MediaQuery.sizeOf(context).height * 1.0,
                     fit: BoxFit.cover,
@@ -76,10 +96,9 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                       Align(
                         alignment: AlignmentDirectional(-1.00, -1.00),
                         child: Padding(
-                          padding: EdgeInsetsDirectional.fromSTEB(
-                              12.0, 10.0, 0.0, 0.0),
+                          padding: EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 0.0, 0.0),
                           child: Text(
-                            'title',
+                            widget.gameInfoModel.title ?? "",
                             style: FlutterFlowTheme.of(context).headlineMedium,
                           ),
                         ),
@@ -103,7 +122,7 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(8.0, 4.0, 8.0, 2.0),
                   child: Text(
-                    'version',
+                    widget.gameInfoModel.version ?? "",
                     style: FlutterFlowTheme.of(context).bodyMedium,
                   ),
                 ),
@@ -117,13 +136,13 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
               child: Container(
                 height: 32.0,
                 decoration: BoxDecoration(
-                  color: FlutterFlowTheme.of(context).secondaryBackground,
+                  color: getEngineColor(widget.gameInfoModel.engine ?? ""),
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 child: Padding(
                   padding: EdgeInsetsDirectional.fromSTEB(8.0, 4.0, 8.0, 2.0),
                   child: Text(
-                    'engine',
+                    widget.gameInfoModel.engine ?? "",
                     style: FlutterFlowTheme.of(context).bodyMedium,
                   ),
                 ),
@@ -135,20 +154,18 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
             child: Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 8.0),
               child: FlutterFlowIconButton(
-                borderColor: FlutterFlowTheme.of(context).primary,
+                borderColor: FlutterFlowTheme.of(context).secondary,
                 borderRadius: 8.0,
                 borderWidth: 0.0,
                 buttonSize: 40.0,
                 fillColor: FlutterFlowTheme.of(context).secondary,
                 icon: Icon(
                   Icons.play_arrow,
-                  color: FlutterFlowTheme.of(context).primaryBackground,
+                  color: Colors.white,
                   size: 24.0,
                 ),
                 showLoadingIndicator: true,
-                onPressed: () {
-                  print('IconButton pressed ...');
-                },
+                onPressed: () {},
               ),
             ),
           ),

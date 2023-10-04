@@ -1,3 +1,6 @@
+import 'package:game_organizer/models/gameInfo.model.dart';
+import 'package:game_organizer/services/localStorage.dart';
+
 import '/components/c_game_card_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -46,24 +49,30 @@ class _CMyGamesViewWidgetState extends State<CMyGamesViewWidget> {
       ),
       child: Padding(
         padding: EdgeInsetsDirectional.fromSTEB(8.0, 8.0, 8.0, 8.0),
-        child: GridView(
-          padding: EdgeInsets.zero,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
-            childAspectRatio: 1.4,
-          ),
-          shrinkWrap: true,
-          scrollDirection: Axis.vertical,
-          children: [
-            wrapWithModel(
-              model: _model.cGameCardModel,
-              updateCallback: () => setState(() {}),
-              child: CGameCardWidget(),
-            ),
-          ],
-        ),
+        child: StreamBuilder<List<GameInfoModel>>(
+            stream: LocalStorage().games,
+            initialData: LocalStorage().games!.value,
+            builder: (context, snapshot) {
+              return GridView.builder(
+                padding: EdgeInsets.zero,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: 1.4,
+                ),
+                shrinkWrap: true,
+                scrollDirection: Axis.vertical,
+                itemCount: snapshot.data!.length,
+                itemBuilder: (context, index) {
+                  return wrapWithModel(
+                    model: _model.cGameCardModel,
+                    updateCallback: () => setState(() {}),
+                    child: CGameCardWidget(gameInfoModel: snapshot.data![index]),
+                  );
+                },
+              );
+            }),
       ),
     );
   }

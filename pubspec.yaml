@@ -63,6 +63,8 @@ dependencies:
   chaleno: ^0.0.6
   puppeteer: ^3.2.0
   localstorage: ^4.0.1+4
+  fast_cached_network_image: ^1.2.0
+  file_picker: ^5.5.0
 
 dev_dependencies:
 

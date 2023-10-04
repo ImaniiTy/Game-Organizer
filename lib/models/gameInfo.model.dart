@@ -1,7 +1,8 @@
 import 'dart:convert';
 
 class GameInfoModel {
-  String? name;
+  String? postId;
+  String? title;
   String? author;
   String? version;
   String? thumbnailUrl;
@@ -13,7 +14,8 @@ class GameInfoModel {
   DateTime? lastTimePlayed;
   DateTime? lastTimeUpdated;
   GameInfoModel({
-    this.name,
+    this.postId,
+    this.title,
     this.author,
     this.version,
     this.thumbnailUrl,
@@ -27,7 +29,8 @@ class GameInfoModel {
   });
 
   GameInfoModel copyWith({
-    String? name,
+    String? postId,
+    String? title,
     String? author,
     String? version,
     String? thumbnailUrl,
@@ -40,7 +43,8 @@ class GameInfoModel {
     DateTime? lastTimeUpdated,
   }) {
     return GameInfoModel(
-      name: name ?? this.name,
+      postId: postId ?? this.postId,
+      title: title ?? this.title,
       author: author ?? this.author,
       version: version ?? this.version,
       thumbnailUrl: thumbnailUrl ?? this.thumbnailUrl,
@@ -56,7 +60,8 @@ class GameInfoModel {
 
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
+      'postId': postId,
+      'title': title,
       'author': author,
       'version': version,
       'thumbnailUrl': thumbnailUrl,
@@ -72,7 +77,8 @@ class GameInfoModel {
 
   factory GameInfoModel.fromMap(Map<String, dynamic> map) {
     return GameInfoModel(
-      name: map['name'],
+      postId: map['postId'],
+      title: map['title'],
       author: map['author'],
       version: map['version'],
       thumbnailUrl: map['thumbnailUrl'],
@@ -92,39 +98,18 @@ class GameInfoModel {
 
   @override
   String toString() {
-    return 'GameInfoModel(name: $name, author: $author, version: $version, thumbnailUrl: $thumbnailUrl, engine: $engine, folderPath: $folderPath, executablePath: $executablePath, downloadUrl: $downloadUrl, isdownloaded: $isdownloaded, lastTimePlayed: $lastTimePlayed, lastTimeUpdated: $lastTimeUpdated)';
+    return 'GameInfoModel(postId: $postId, title: $title, author: $author, version: $version, thumbnailUrl: $thumbnailUrl, engine: $engine, folderPath: $folderPath, executablePath: $executablePath, downloadUrl: $downloadUrl, isdownloaded: $isdownloaded, lastTimePlayed: $lastTimePlayed, lastTimeUpdated: $lastTimeUpdated)';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
 
-    return other is GameInfoModel &&
-        other.name == name &&
-        other.author == author &&
-        other.version == version &&
-        other.thumbnailUrl == thumbnailUrl &&
-        other.engine == engine &&
-        other.folderPath == folderPath &&
-        other.executablePath == executablePath &&
-        other.downloadUrl == downloadUrl &&
-        other.isdownloaded == isdownloaded &&
-        other.lastTimePlayed == lastTimePlayed &&
-        other.lastTimeUpdated == lastTimeUpdated;
+    return other is GameInfoModel && other.postId == postId;
   }
 
   @override
   int get hashCode {
-    return name.hashCode ^
-        author.hashCode ^
-        version.hashCode ^
-        thumbnailUrl.hashCode ^
-        engine.hashCode ^
-        folderPath.hashCode ^
-        executablePath.hashCode ^
-        downloadUrl.hashCode ^
-        isdownloaded.hashCode ^
-        lastTimePlayed.hashCode ^
-        lastTimeUpdated.hashCode;
+    return postId.hashCode;
   }
 }
