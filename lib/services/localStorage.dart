@@ -45,13 +45,17 @@ class LocalStorage {
   }
 
   void addGameToLibrary(GameInfoModel gameInfoModel) {
-    games!.value.add(gameInfoModel);
-    notifyListChanged(persiste: true);
+    if (games!.value.contains(gameInfoModel)) {
+      updateGameInfoModel(gameInfoModel);
+    } else {
+      games!.value.add(gameInfoModel);
+      notifyListChanged(persiste: true);
+    }
   }
 
   void removeGameFromLibrary(GameInfoModel gameInfoModel) {
     games!.value.remove(gameInfoModel);
-    notifyListChanged();
+    notifyListChanged(persiste: true);
   }
 
   void updateGameInfoModel(GameInfoModel gameInfoModel) {

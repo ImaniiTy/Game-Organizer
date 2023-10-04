@@ -33,8 +33,11 @@ class Scrapper {
     var gameInfoJson = <String, dynamic>{};
     gameInfoJson["engine"] = parser.querySelector(".p-title-value span").text;
 
+    RegExp expNode = RegExp(r'.+<\/span>(.*)$');
+    var titleNode = expNode.firstMatch(parser.querySelector(".p-title-value").innerHTML!)!.group(1);
+
     RegExp exp = RegExp(r'(.+)\[(.+)\].+\[(.+)\]');
-    var titleMaches = exp.firstMatch(parser.querySelector(".p-title-value").text!)!.groups([1, 2, 3]);
+    var titleMaches = exp.firstMatch(titleNode!)!.groups([1, 2, 3]);
     gameInfoJson["title"] = titleMaches[0];
     gameInfoJson["version"] = titleMaches[1];
     gameInfoJson["author"] = titleMaches[2];

@@ -18,14 +18,18 @@ class Navigation {
 
   late final BehaviorSubject<NavigationContext> navigationStream;
 
-  void goTo(String name) {
-    if (Routes.names[name] != null) navigationStream.add(Routes.names[name]!);
+  void goTo(String name, {Map<String, String>? params}) {
+    if (Routes.names[name] != null) {
+      Routes.names[name]!.params = params;
+      navigationStream.add(Routes.names[name]!);
+    }
   }
 }
 
 class NavigationContext {
   final Function builder;
   final String name;
+  Map<String, String>? params;
 
   NavigationContext(this.builder, this.name);
 }

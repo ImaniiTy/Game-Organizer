@@ -8,7 +8,7 @@ import 'navigation.dart';
 class Routes {
   static Map<String, NavigationContext> names = {
     "/MyGames": NavigationContext(
-      (context) {
+      (context, params) {
         return wrapWithModel<CMyGamesViewModel>(
           model: createModel(context, () => CMyGamesViewModel()),
           updateCallback: () {},
@@ -18,17 +18,17 @@ class Routes {
       "/MyGames",
     ),
     "/WebView": NavigationContext(
-      (context) {
+      (context, params) {
         return wrapWithModel<CWebViewModel>(
           model: createModel(context, () => CWebViewModel()),
           updateCallback: () {},
-          child: CWebViewWidget(),
+          child: CWebViewWidget(params: params),
         );
       },
       "/WebView",
     ),
     "/Settings": NavigationContext(
-      (context) {
+      (context, params) {
         return wrapWithModel<CSsttingsViewModel>(
           model: createModel(context, () => CSsttingsViewModel()),
           updateCallback: () {},

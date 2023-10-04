@@ -1,4 +1,12 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:game_organizer/models/gameInfo.model.dart';
+import 'package:game_organizer/services/coreService.dart';
+import 'package:game_organizer/services/downloadManager.dart';
+import 'package:game_organizer/services/localStorage.dart';
+import 'package:game_organizer/services/navigation/navigation.dart';
+import 'package:game_organizer/services/processHelper.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -100,7 +108,7 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                           padding: EdgeInsetsDirectional.fromSTEB(12.0, 10.0, 0.0, 0.0),
                           child: Text(
                             widget.gameInfoModel.title ?? "",
-                            style: FlutterFlowTheme.of(context).headlineMedium,
+                            style: FlutterFlowTheme.of(context).titleMedium,
                           ),
                         ),
                       ),
@@ -155,18 +163,39 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
             child: Padding(
               padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 8.0, 8.0),
               child: FlutterFlowIconButton(
-                borderColor: FlutterFlowTheme.of(context).secondary,
+                borderColor:
+                    widget.gameInfoModel.isdownloaded ?? false ? FlutterFlowTheme.of(context).secondary : Colors.blueAccent,
                 borderRadius: 8.0,
                 borderWidth: 0.0,
                 buttonSize: 40.0,
-                fillColor: FlutterFlowTheme.of(context).secondary,
+                fillColor:
+                    widget.gameInfoModel.isdownloaded ?? false ? FlutterFlowTheme.of(context).secondary : Colors.blueAccent,
                 icon: Icon(
-                  Icons.play_arrow,
+                  widget.gameInfoModel.isdownloaded ?? false ? Icons.play_arrow : Icons.download,
                   color: FlutterFlowTheme.of(context).primaryText,
                   size: 24.0,
                 ),
                 showLoadingIndicator: true,
-                onPressed: () {},
+                onPressed: () async {
+                  if (widget.gameInfoModel.isdownloaded ?? false) {
+                    if (widget.gameInfoModel.executablePath != null) {
+                      ProcessHelper().runExecutable(widget.gameInfoModel.executablePath!);
+                    } else {
+                      var gameFileName = DownloadManager.getFilenNameFromGameInfo(widget.gameInfoModel).split(".zip").first;
+                      String gameFolderPath = "${ProcessHelper().gamesFolder}/${gameFileName}/extracted".replaceAll("/", "\\");
+                      FilePickerResult? result = await FilePicker.platform.pickFiles(
+                          dialogTitle: "Select Executable",
+                          allowMultiple: false,
+                          allowedExtensions: ["exe"],
+                          initialDirectory: gameFolderPath);
+                      if (result != null) {
+                        widget.gameInfoModel.executablePath = result.paths[0];
+                      }
+                    }
+                  } else {
+                    CoreService().startGameDownload(widget.gameInfoModel);
+                  }
+                },
               ),
             ),
           ),
@@ -185,12 +214,18 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                       size: 24.0,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 12.0, 4.0),
-                    child: FaIcon(
-                      FontAwesomeIcons.globe,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                      size: 24.0,
+                  GestureDetector(
+                    onTap: () {
+                      Navigation()
+                          .goTo("/WebView", params: {"initialUrl": "https://f95zone.to/threads/${widget.gameInfoModel.postId}"});
+                    },
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 12.0, 4.0),
+                      child: FaIcon(
+                        FontAwesomeIcons.globe,
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                        size: 24.0,
+                      ),
                     ),
                   ),
                 ],
@@ -199,12 +234,17 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
           ),
           Align(
             alignment: AlignmentDirectional(1.00, -1.00),
-            child: Padding(
-              padding: EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 12.0),
-              child: FaIcon(
-                FontAwesomeIcons.trashAlt,
-                color: FlutterFlowTheme.of(context).error,
-                size: 24.0,
+            child: GestureDetector(
+              onTap: () {
+                LocalStorage().removeGameFromLibrary(widget.gameInfoModel);
+              },
+              child: Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 12.0),
+                child: FaIcon(
+                  FontAwesomeIcons.trashCan,
+                  color: FlutterFlowTheme.of(context).error,
+                  size: 24.0,
+                ),
               ),
             ),
           ),

@@ -79,9 +79,9 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                             stream: Navigation().navigationStream,
                             builder: (context, snapshot) {
                               if (snapshot.hasData) {
-                                return snapshot.data!.builder(context);
+                                return snapshot.data!.builder(context, snapshot.data!.params);
                               }
-                              return Routes.names["/MyGames"]!.builder(context);
+                              return Routes.names["/MyGames"]!.builder(context, {});
                             },
                           ),
                         ),

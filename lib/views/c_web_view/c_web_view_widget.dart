@@ -1,19 +1,26 @@
 import 'dart:developer';
 
-import 'package:game_organizer/services/localStorage.dart';
-import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_win_floating/webview.dart';
-
-import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_win_floating/webview.dart';
+
+import 'package:game_organizer/services/localStorage.dart';
+
+import '/flutter_flow/flutter_flow_theme.dart';
+import '/flutter_flow/flutter_flow_util.dart';
 import 'c_web_view_model.dart';
+
 export 'c_web_view_model.dart';
 
 class CWebViewWidget extends StatefulWidget {
-  const CWebViewWidget({Key? key}) : super(key: key);
+  const CWebViewWidget({
+    Key? key,
+    this.params,
+  }) : super(key: key);
+
+  final Map<String, String>? params;
 
   @override
   _CWebViewWidgetState createState() => _CWebViewWidgetState();
@@ -57,7 +64,7 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
       },
       onWebResourceError: (error) => print("onWebResourceError: ${error.description}"),
     ));
-    webviewController!.loadRequest(Uri.parse("https://f95zone.to/sam/latest_alpha/"));
+    webviewController!.loadRequest(Uri.parse(widget.params?["initialUrl"] ?? "https://f95zone.to/sam/latest_alpha/"));
   }
 
   @override

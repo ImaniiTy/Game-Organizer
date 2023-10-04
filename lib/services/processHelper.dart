@@ -20,7 +20,10 @@ class ProcessHelper {
 
   ProcessHelper._internal();
 
-  Future<Process> runCommand({String dest = "", String userAgent = "", String args = "", String program = "aria2c"}) async {
+  String get gamesFolder => LocalStorage().getItem("gamesFolder") ?? KGAMES_FOLDER;
+  String get tempFolder => LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER;
+
+  Future<Process> runCommand({String dest = "", String userAgent = "", String args = "", String program = "aria2c.exe"}) async {
     var argsList = args.split(" ");
     // argsList[argsList.indexWhere((element) => element == "%{dest}")] = dest;
     // argsList[argsList.indexWhere((element) => element == "%{userAgent}")] = userAgent;
@@ -34,10 +37,29 @@ class ProcessHelper {
     String cookies = "cookie:${SessionManager().getSessionAsString()}";
 
     var sourceProcess = await runCommand(
-      args: '-d ${LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER} --header=$cookies -x 16 -s 16 ${uri.toString()}',
+      args:
+          '-d ${LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER} -o $fileName --header=$cookies -x 16 -s 16 ${uri.toString()}',
     );
 
     return DownloadProcess(source: sourceProcess);
+  }
+
+  Future<DownloadProcess> unzipFile({required String sourceFileName}) async {
+    var sourceProcess = await runCommand(
+      program: "7za.exe",
+      args: 'x ${tempFolder}/${sourceFileName} -o${gamesFolder}/${sourceFileName.split(".zip").first}/extracted -y',
+    );
+
+    return DownloadProcess(
+      source: sourceProcess,
+      onFinished: () {
+        runCommand(program: "del", args: "${tempFolder}/${sourceFileName}");
+      },
+    );
+  }
+
+  Future<void> runExecutable(String path) async {
+    await runCommand(program: path);
   }
 
   String? getReferer(Uri uri) {
@@ -71,11 +93,20 @@ class ProcessHelper {
 
 class DownloadProcess {
   Process source;
+  Function? onFinished;
+
+  late Future<int> waitExitCode;
 
   Stream<String> get stdout => source.stdout.transform(utf8.decoder);
   Stream<String> get stderr => source.stderr.transform(utf8.decoder);
 
   DownloadProcess({
     required this.source,
-  });
+    this.onFinished,
+  }) {
+    this.waitExitCode = this.source.exitCode;
+    this.source.exitCode.then((value) {
+      if (value == 0) this.onFinished?.call();
+    });
+  }
 }
