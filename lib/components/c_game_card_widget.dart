@@ -4,6 +4,7 @@ import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'c_game_card_model.dart';
@@ -161,11 +162,49 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                 fillColor: FlutterFlowTheme.of(context).secondary,
                 icon: Icon(
                   Icons.play_arrow,
-                  color: Colors.white,
+                  color: FlutterFlowTheme.of(context).primaryText,
                   size: 24.0,
                 ),
                 showLoadingIndicator: true,
                 onPressed: () {},
+              ),
+            ),
+          ),
+          Align(
+            alignment: AlignmentDirectional(-1.00, 1.00),
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 12.0, 4.0),
+                    child: FaIcon(
+                      FontAwesomeIcons.folderOpen,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                      size: 24.0,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 12.0, 4.0),
+                    child: FaIcon(
+                      FontAwesomeIcons.globe,
+                      color: FlutterFlowTheme.of(context).secondaryText,
+                      size: 24.0,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Align(
+            alignment: AlignmentDirectional(1.00, -1.00),
+            child: Padding(
+              padding: EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 12.0, 12.0),
+              child: FaIcon(
+                FontAwesomeIcons.trashAlt,
+                color: FlutterFlowTheme.of(context).error,
+                size: 24.0,
               ),
             ),
           ),
