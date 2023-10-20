@@ -23,17 +23,34 @@ class DownloadManager {
       downloadsList[downloadUrl] = await ProcessHelper().downloadFile(
         url: downloadUrl,
         fileName: fileName,
-      );
+      )
+        ..onFinished = () {
+          removeFileFromList(downloadUrl);
+        };
     }
 
     return downloadsList[downloadUrl];
   }
 
-  Future<void> stop(String downloadUrl) async {
+  Future<void> stopDownload(String downloadUrl) async {
     downloadsList[downloadUrl]?.source.kill();
+    removeFileFromList(downloadUrl);
   }
 
-  static String getFilenNameFromGameInfo(GameInfoModel gameInfoModel) {
-    return "${gameInfoModel.title}-${gameInfoModel.postId}-${gameInfoModel.version}.zip".replaceAll(" ", "");
+  void removeFileFromList(String downloadUrl) {
+    downloadsList.remove(downloadUrl);
+  }
+
+  bool isFileDownloading(String downloadUrl) {
+    return downloadsList.containsKey(downloadUrl);
+  }
+
+  DownloadProcess? getDownloadProcess(String downloadUrl) {
+    return downloadsList[downloadUrl];
+  }
+
+  static String getFilenNameFromGameInfo(GameInfoModel gameInfoModel, {bool withVersion = false}) {
+    return "${gameInfoModel.title}-${gameInfoModel.postId}${withVersion ? "-${gameInfoModel.version!}" : ""}.zip"
+        .replaceAll(RegExp(r' |\:'), "");
   }
 }

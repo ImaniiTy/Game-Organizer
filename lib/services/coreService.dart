@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:game_organizer/models/gameInfo.model.dart';
 import 'package:game_organizer/services/downloadManager.dart';
@@ -37,16 +38,16 @@ class CoreService {
 
     LocalStorage().addGameToLibrary(gameInfoModel);
 
-    // downloadProcess = await ProcessHelper().downloadFile(url: realDownloadLink!);
-    // downloadProcess?.stdout.listen(log);
-    // downloadProcess?.stderr.listen(log);
+    startGameDownload(gameInfoModel);
   }
 
-  Future<void> startGameDownload(GameInfoModel gameInfoModel) async {
+  Future<void> startGameDownload(GameInfoModel gameInfoModel, {Function? onDownloadStarted}) async {
     var downloadProcess = await DownloadManager().startDownload(
       gameInfoModel.downloadUrl,
-      fileName: DownloadManager.getFilenNameFromGameInfo(gameInfoModel),
+      fileName: DownloadManager.getFilenNameFromGameInfo(gameInfoModel, withVersion: true),
     );
+
+    onDownloadStarted?.call();
 
     downloadProcess?.stdout.listen(log);
     downloadProcess?.stderr.listen(log);
@@ -56,9 +57,17 @@ class CoreService {
     log(result.toString());
 
     if (result == 0) {
+      var gameFolder = DownloadManager.getFilenNameFromGameInfo(gameInfoModel).split(".zip").first;
+      var gameFilesPath = "${ProcessHelper().gamesFolder}/$gameFolder";
+
       var unzipProcess = await ProcessHelper().unzipFile(
         sourceFileName: DownloadManager.getFilenNameFromGameInfo(
           gameInfoModel,
+          withVersion: true,
+        ),
+        destFileName: DownloadManager.getFilenNameFromGameInfo(
+          gameInfoModel,
+          withVersion: false,
         ),
       );
 
@@ -69,8 +78,37 @@ class CoreService {
 
       log(result.toString());
 
-      gameInfoModel.isdownloaded = true;
-      LocalStorage().updateGameInfoModel(gameInfoModel);
+      if (result == 0) {
+        try {
+          await ProcessHelper().deleteFolder("$gameFilesPath/old");
+        } catch (e) {}
+
+        try {
+          var lastVersionFolder = Directory(ProcessHelper.formatPath("$gameFilesPath/extracted"));
+          if (lastVersionFolder.existsSync()) {
+            lastVersionFolder.renameSync(ProcessHelper.formatPath("$gameFilesPath/old"));
+          }
+          Directory(ProcessHelper.formatPath("$gameFilesPath/temp"))
+              .renameSync(ProcessHelper.formatPath("$gameFilesPath/extracted"));
+        } catch (e) {}
+
+        gameInfoModel.isdownloaded = true;
+        gameInfoModel.lastTimeUpdated = DateTime.now();
+        LocalStorage().updateGameInfoModel(gameInfoModel);
+      }
     }
+  }
+
+  Future<bool?> checkForUpdates(GameInfoModel gameInfoModel) async {
+    var gamePage = await Scrapper().getPageParser("https://f95zone.to/threads/${gameInfoModel.postId}");
+    var updatedGameInfoModel = Scrapper().extractGameInfo(gamePage!);
+
+    return updatedGameInfoModel.version != gameInfoModel.version;
+  }
+
+  void runGame(GameInfoModel gameInfoModel) {
+    gameInfoModel.lastTimePlayed = DateTime.now();
+    LocalStorage().updateGameInfoModel(gameInfoModel);
+    ProcessHelper().runExecutable(gameInfoModel.executablePath!);
   }
 }

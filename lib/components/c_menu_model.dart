@@ -26,19 +26,4 @@ class CMenuModel extends FlutterFlowModel {
   /// Action blocks are added here.
 
   /// Additional helper methods are added here.
-  Future<void> fetchGameInfo() async {
-    downloadProcess?.source.kill();
-    String? currentPage = await webviewController?.currentUrl();
-    if (currentPage == null) return;
-
-    var page = await Scrapper().getPageParser(currentPage);
-    var downloadLinks = Scrapper().getSupportedHostsFrommPage(page!);
-
-    // TEST
-    var realDownloadLink = await Scrapper().getRealDownloadUrl(downloadLinks[1]!);
-    downloadProcess = await ProcessHelper().downloadFile(url: realDownloadLink!);
-    downloadProcess?.stdout.listen(log);
-    downloadProcess?.stderr.listen(log);
-    return;
-  }
 }

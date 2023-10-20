@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:game_organizer/services/localStorage.dart';
+import 'package:game_organizer/services/processHelper.dart';
 
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -42,5 +44,9 @@ class CSsttingsViewModel extends FlutterFlowModel<CSsttingsViewWidget> {
     } catch (e) {
       log("Failed to decode ${clipboardData?.text}");
     }
+  }
+
+  Future<void> cleanTempFolder() async {
+    await ProcessHelper().deleteFolder(ProcessHelper.formatPath(ProcessHelper().tempFolder));
   }
 }

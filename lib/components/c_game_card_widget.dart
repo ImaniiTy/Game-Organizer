@@ -1,4 +1,6 @@
+import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:game_organizer/models/gameInfo.model.dart';
@@ -84,6 +86,7 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
                   child: FastCachedImage(
+                    key: ValueKey(widget.gameInfoModel.thumbnailUrl),
                     url: widget.gameInfoModel.thumbnailUrl ?? "",
                     width: MediaQuery.sizeOf(context).width * 1.0,
                     height: MediaQuery.sizeOf(context).height * 1.0,
@@ -143,7 +146,7 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
             child: Padding(
               padding: EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 0.0, 0.0),
               child: Container(
-                height: 32.0,
+                height: 27.0,
                 decoration: BoxDecoration(
                   color: getEngineColor(widget.gameInfoModel.engine ?? ""),
                   borderRadius: BorderRadius.circular(5.0),
@@ -171,7 +174,13 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                 fillColor:
                     widget.gameInfoModel.isdownloaded ?? false ? FlutterFlowTheme.of(context).secondary : Colors.blueAccent,
                 icon: Icon(
-                  widget.gameInfoModel.isdownloaded ?? false ? Icons.play_arrow : Icons.download,
+                  () {
+                    if (DownloadManager().isFileDownloading(widget.gameInfoModel.downloadUrl!)) return Icons.pause;
+
+                    return !widget.gameInfoModel.isdownloaded! || widget.gameInfoModel.isdownloaded == null
+                        ? Icons.download
+                        : Icons.play_arrow;
+                  }(),
                   color: FlutterFlowTheme.of(context).primaryText,
                   size: 24.0,
                 ),
@@ -179,22 +188,29 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                 onPressed: () async {
                   if (widget.gameInfoModel.isdownloaded ?? false) {
                     if (widget.gameInfoModel.executablePath != null) {
-                      ProcessHelper().runExecutable(widget.gameInfoModel.executablePath!);
+                      CoreService().runGame(widget.gameInfoModel);
                     } else {
                       var gameFileName = DownloadManager.getFilenNameFromGameInfo(widget.gameInfoModel).split(".zip").first;
-                      String gameFolderPath = "${ProcessHelper().gamesFolder}/${gameFileName}/extracted".replaceAll("/", "\\");
+                      String gameFolderPath =
+                          ProcessHelper.formatPath("${ProcessHelper().gamesFolder}/${gameFileName}/extracted");
                       FilePickerResult? result = await FilePicker.platform.pickFiles(
-                          dialogTitle: "Select Executable",
-                          allowMultiple: false,
-                          allowedExtensions: ["exe"],
-                          initialDirectory: gameFolderPath);
+                        dialogTitle: "Select Executable",
+                        allowMultiple: false,
+                        allowedExtensions: ["exe"],
+                        initialDirectory: gameFolderPath,
+                      );
                       if (result != null) {
                         widget.gameInfoModel.executablePath = result.paths[0];
+                        CoreService().runGame(widget.gameInfoModel);
                       }
                     }
+                  } else if (DownloadManager().isFileDownloading(widget.gameInfoModel.downloadUrl!)) {
+                    DownloadManager().stopDownload(widget.gameInfoModel.downloadUrl!);
                   } else {
-                    CoreService().startGameDownload(widget.gameInfoModel);
+                    CoreService().startGameDownload(widget.gameInfoModel, onDownloadStarted: () => setState(() {}));
                   }
+
+                  setState(() {});
                 },
               ),
             ),
@@ -205,13 +221,14 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
               padding: EdgeInsetsDirectional.fromSTEB(12.0, 0.0, 0.0, 8.0),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Padding(
                     padding: EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 12.0, 4.0),
                     child: FaIcon(
                       FontAwesomeIcons.folderOpen,
                       color: FlutterFlowTheme.of(context).secondaryText,
-                      size: 24.0,
+                      size: 22.0,
                     ),
                   ),
                   GestureDetector(
@@ -224,9 +241,50 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                       child: FaIcon(
                         FontAwesomeIcons.globe,
                         color: FlutterFlowTheme.of(context).secondaryText,
-                        size: 24.0,
+                        size: 22.0,
                       ),
                     ),
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      bool? hasUpdates = await CoreService().checkForUpdates(widget.gameInfoModel);
+                      if (!hasUpdates!) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Center(
+                            child: Text(
+                              "No Updates",
+                              style: FlutterFlowTheme.of(context).titleMedium.copyWith(color: Colors.black),
+                            ),
+                          ),
+                          backgroundColor: Colors.greenAccent,
+                          duration: Duration(seconds: 3),
+                          padding: EdgeInsets.symmetric(vertical: 4.0),
+                        ));
+                      } else {
+                        Navigation().goTo("/WebView",
+                            params: {"initialUrl": "https://f95zone.to/threads/${widget.gameInfoModel.postId}"});
+                      }
+                    },
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 12.0, 4.0),
+                      child: FaIcon(
+                        FontAwesomeIcons.arrowsRotate,
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                        size: 22.0,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Text(
+                    () {
+                      try {
+                        String formatedDate = DateFormat.yMd().add_Hm().format(widget.gameInfoModel.lastTimePlayed!);
+                        return "Played at:\n$formatedDate";
+                      } catch (e) {
+                        return "Played at:\n";
+                      }
+                    }(),
+                    style: FlutterFlowTheme.of(context).labelSmall,
                   ),
                 ],
               ),
@@ -248,6 +306,38 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
               ),
             ),
           ),
+          if (DownloadManager().getDownloadProcess(widget.gameInfoModel.downloadUrl!) != null)
+            StreamBuilder<String>(
+                stream: DownloadManager().getDownloadProcess(widget.gameInfoModel.downloadUrl!)?.stdout,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) log(snapshot.data!);
+                  if (!snapshot.hasData || !snapshot.data!.contains("ETA")) {
+                    return Container();
+                  }
+
+                  DownloadStatus downloadStatus = DownloadStatus.fromString(snapshot.data!);
+                  return Align(
+                    alignment: AlignmentDirectional(-1.0, 0),
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 0.0, 0.0),
+                      child: Container(
+                        width: 180,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [Colors.green.shade900, Colors.black87],
+                            stops: List.generate(2, (index) => double.parse(downloadStatus.currentPercent) / 100),
+                            tileMode: TileMode.clamp,
+                          ),
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                          child: Text("${downloadStatus.downloadSpeed}s ETA:${downloadStatus.eta}"),
+                        ),
+                      ),
+                    ),
+                  );
+                }),
         ],
       ),
     );

@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:game_organizer/models/gameInfo.model.dart';
+import 'package:game_organizer/services/downloadManager.dart';
+import 'package:game_organizer/services/processHelper.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:localstorage/localstorage.dart' as storage;
 
@@ -55,6 +57,8 @@ class LocalStorage {
 
   void removeGameFromLibrary(GameInfoModel gameInfoModel) {
     games!.value.remove(gameInfoModel);
+    ProcessHelper().deleteFolder(
+        "${ProcessHelper().gamesFolder}/${DownloadManager.getFilenNameFromGameInfo(gameInfoModel).split(".zip").first}");
     notifyListChanged(persiste: true);
   }
 

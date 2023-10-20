@@ -38,28 +38,40 @@ class ProcessHelper {
 
     var sourceProcess = await runCommand(
       args:
-          '-d ${LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER} -o $fileName --header=$cookies -x 16 -s 16 ${uri.toString()}',
+          '-d ${LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER} -o $fileName --header=$cookies -x 10 -s 10 -m 20 ${uri.toString()}',
     );
 
     return DownloadProcess(source: sourceProcess);
   }
 
-  Future<DownloadProcess> unzipFile({required String sourceFileName}) async {
+  Future<DownloadProcess> unzipFile({required String sourceFileName, required String destFileName}) async {
+    try {
+      await deleteFolder(formatPath("${gamesFolder}/${destFileName.split(".zip").first}/temp"));
+    } catch (e) {}
+
     var sourceProcess = await runCommand(
-      program: "7za.exe",
-      args: 'x ${tempFolder}/${sourceFileName} -o${gamesFolder}/${sourceFileName.split(".zip").first}/extracted -y',
+      program: "7z.exe",
+      args: 'x ${tempFolder}/${sourceFileName} -o${gamesFolder}/${destFileName.split(".zip").first}/temp -y',
     );
 
     return DownloadProcess(
       source: sourceProcess,
       onFinished: () {
-        runCommand(program: "del", args: "${tempFolder}/${sourceFileName}");
+        deleteFile(formatPath("${tempFolder}/${sourceFileName}"));
       },
     );
   }
 
   Future<void> runExecutable(String path) async {
     await runCommand(program: path);
+  }
+
+  Future<void> deleteFile(String path) async {
+    File(formatPath(path)).deleteSync();
+  }
+
+  Future<void> deleteFolder(String path) async {
+    Directory(formatPath(path)).deleteSync(recursive: true);
   }
 
   String? getReferer(Uri uri) {
@@ -69,6 +81,10 @@ class ProcessHelper {
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  static String formatPath(String path) {
+    return path.replaceAll("/", "\\");
   }
 
   // static Future<DownloadProcess> downloadM3u8({required String url, required String fileName}) async {
@@ -97,8 +113,8 @@ class DownloadProcess {
 
   late Future<int> waitExitCode;
 
-  Stream<String> get stdout => source.stdout.transform(utf8.decoder);
-  Stream<String> get stderr => source.stderr.transform(utf8.decoder);
+  late Stream<String> stdout = source.stdout.transform(utf8.decoder).asBroadcastStream();
+  late Stream<String> stderr = source.stderr.transform(utf8.decoder).asBroadcastStream();
 
   DownloadProcess({
     required this.source,
@@ -108,5 +124,35 @@ class DownloadProcess {
     this.source.exitCode.then((value) {
       if (value == 0) this.onFinished?.call();
     });
+  }
+}
+
+class DownloadStatus {
+  String currentSize;
+  String totalSize;
+  String currentPercent;
+  String downloadSpeed;
+  String eta;
+
+  static String _regexp = r"\[.*#(\S+) (\S+)\/(\S+)\((\S+)%\).*DL:(\S+) ETA:(\S+).*\]";
+
+  DownloadStatus({
+    required this.currentSize,
+    required this.totalSize,
+    required this.currentPercent,
+    required this.downloadSpeed,
+    required this.eta,
+  });
+
+  factory DownloadStatus.fromString(String string) {
+    var match = RegExp(_regexp).firstMatch(string);
+
+    return DownloadStatus(
+      currentSize: match!.group(2) ?? "",
+      totalSize: match!.group(3) ?? "",
+      currentPercent: match!.group(4) ?? "",
+      downloadSpeed: match!.group(5) ?? "",
+      eta: match!.group(6) ?? "",
+    );
   }
 }

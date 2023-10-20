@@ -11,8 +11,12 @@ import 'c_web_view_widget.dart' show CWebViewWidget;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:rxdart/rxdart.dart';
+
+enum FetchStatus { none, done, running }
 
 WinWebViewController? webviewController;
+BehaviorSubject<FetchStatus> gameInfoFetchFuture = BehaviorSubject.seeded(FetchStatus.none);
 
 class CWebViewModel extends FlutterFlowModel {
   /// Initialization and disposal methods.
@@ -24,11 +28,16 @@ class CWebViewModel extends FlutterFlowModel {
   /// Action blocks are added here.
 
   /// Additional helper methods are added here.
+
   Future<NavigationDecision> onNavigationRequest(WinWebViewController webviewController, NavigationRequest request) async {
     var currentUrl = await webviewController.currentUrl() ?? "";
     bool isADownloadUrl = Scrapper.supportedHosts.any((element) => request.url.contains(element));
     if (currentUrl.contains("f95zone.to/threads") && isADownloadUrl) {
-      CoreService().addGameAndStartDownload(currentUrl, request.url);
+      gameInfoFetchFuture.add(FetchStatus.running);
+      CoreService().addGameAndStartDownload(currentUrl, request.url).then((_) {
+        gameInfoFetchFuture.add(FetchStatus.done);
+        Future.delayed(Duration(seconds: 2)).then((_) => gameInfoFetchFuture.add(FetchStatus.none));
+      });
       // Navigation().goTo("/MyGames");
       return NavigationDecision.prevent;
     } else {

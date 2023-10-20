@@ -195,35 +195,20 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                         alignment: AlignmentDirectional(0.00, 0.00),
                         child: Padding(
                           padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 8.0),
-                          child: FFButtonWidget(
-                            onPressed: () async {
-                              await _model.fetchGameInfo();
+                          child: StreamBuilder(
+                            stream: gameInfoFetchFuture,
+                            initialData: FetchStatus.none,
+                            builder: (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.data! == FetchStatus.running) {
+                                return Row(
+                                  children: [CircularProgressIndicator(), SizedBox(width: 8), Text("Adding Game...")],
+                                );
+                              } else if (snapshot.data! == FetchStatus.done) {
+                                return Icon(Icons.check, color: Colors.green);
+                              } else {
+                                return Container();
+                              }
                             },
-                            text: 'Add Game',
-                            icon: Icon(
-                              Icons.add,
-                              color: Color(0xFFCACACA),
-                              size: 28.0,
-                            ),
-                            options: FFButtonOptions(
-                              width: double.infinity,
-                              height: 40.0,
-                              padding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
-                              iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 6.0, 0.0),
-                              color: Colors.transparent,
-                              textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                    fontFamily: 'Readex Pro',
-                                    color: Colors.white,
-                                    fontSize: 16.0,
-                                  ),
-                              elevation: 0.0,
-                              borderSide: BorderSide(
-                                color: Colors.transparent,
-                                width: 0.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                              alignment: null,
-                            ),
                           ),
                         ),
                       ),

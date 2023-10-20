@@ -9,7 +9,12 @@ class SessionManager {
 
   SessionManager._internal();
 
-  String? gofileUserSession;
+  String? _gofileUserSession;
+  String? get gofileUserSession => _gofileUserSession ?? LocalStorage().getItem("gofileUserSession");
+  set gofileUserSession(String? value) {
+    _gofileUserSession = value;
+    LocalStorage().setItem("gofileUserSession", _gofileUserSession);
+  }
 
   Map<String, String> getSessionAsMap() {
     return {"cookie": getSessionAsString()};

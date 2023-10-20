@@ -68,7 +68,7 @@ class _CMyGamesViewWidgetState extends State<CMyGamesViewWidget> {
                   return wrapWithModel(
                     model: _model.cGameCardModel,
                     updateCallback: () => setState(() {}),
-                    child: CGameCardWidget(gameInfoModel: snapshot.data![index]),
+                    child: CGameCardWidget(gameInfoModel: snapshot.data![snapshot.data!.length - index - 1]),
                   );
                 },
               );
