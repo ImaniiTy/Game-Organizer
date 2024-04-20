@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 import 'package:game_organizer/models/gameInfo.model.dart';
 import 'package:game_organizer/services/localStorage.dart';
 
@@ -19,6 +21,7 @@ class CMyGamesViewWidget extends StatefulWidget {
 
 class _CMyGamesViewWidgetState extends State<CMyGamesViewWidget> {
   late CMyGamesViewModel _model;
+  late SearchController _searchController;
 
   @override
   void setState(VoidCallback callback) {
@@ -30,12 +33,13 @@ class _CMyGamesViewWidgetState extends State<CMyGamesViewWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => CMyGamesViewModel());
+    _searchController = SearchController();
   }
 
   @override
   void dispose() {
     _model.maybeDispose();
-
+    _searchController.dispose();
     super.dispose();
   }
 
@@ -53,24 +57,52 @@ class _CMyGamesViewWidgetState extends State<CMyGamesViewWidget> {
             stream: LocalStorage().games,
             initialData: LocalStorage().games!.value,
             builder: (context, snapshot) {
-              return GridView.builder(
-                padding: EdgeInsets.zero,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 1.4,
-                ),
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                itemCount: snapshot.data!.length,
-                itemBuilder: (context, index) {
-                  return wrapWithModel(
-                    model: _model.cGameCardModel,
-                    updateCallback: () => setState(() {}),
-                    child: CGameCardWidget(gameInfoModel: snapshot.data![snapshot.data!.length - index - 1]),
-                  );
-                },
+              var gamesList = snapshot.data!.where((element) {
+                return element.title?.toLowerCase().contains(_searchController.text.toLowerCase()) ?? false;
+              }).toList();
+              return Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12.0),
+                    child: SearchAnchor(
+                      searchController: _searchController,
+                      builder: (context, controller) {
+                        return SearchBar(
+                          controller: controller,
+                          leading: const Icon(Icons.search),
+                          constraints: BoxConstraints(minWidth: 360.0, maxWidth: 800.0, minHeight: 42.0),
+                          onChanged: (value) {
+                            LocalStorage().games?.add(snapshot.data!);
+                          },
+                        );
+                      },
+                      suggestionsBuilder: (context, controller) {
+                        return [];
+                      },
+                    ),
+                  ),
+                  Flexible(
+                    child: GridView.builder(
+                      padding: EdgeInsets.zero,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 10.0,
+                        mainAxisSpacing: 10.0,
+                        childAspectRatio: 1.4,
+                      ),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemCount: gamesList.length,
+                      itemBuilder: (context, index) {
+                        return wrapWithModel(
+                          model: _model.cGameCardModel,
+                          updateCallback: () => setState(() {}),
+                          child: CGameCardWidget(gameInfoModel: gamesList[gamesList.length - index - 1]),
+                        );
+                      },
+                    ),
+                  ),
+                ],
               );
             }),
       ),

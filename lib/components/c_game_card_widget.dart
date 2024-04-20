@@ -3,12 +3,14 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/widgets.dart';
 import 'package:game_organizer/models/gameInfo.model.dart';
 import 'package:game_organizer/services/coreService.dart';
 import 'package:game_organizer/services/downloadManager.dart';
 import 'package:game_organizer/services/localStorage.dart';
 import 'package:game_organizer/services/navigation/navigation.dart';
 import 'package:game_organizer/services/processHelper.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
@@ -175,7 +177,7 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                     widget.gameInfoModel.isdownloaded ?? false ? FlutterFlowTheme.of(context).secondary : Colors.blueAccent,
                 icon: Icon(
                   () {
-                    if (DownloadManager().isFileDownloading(widget.gameInfoModel.downloadUrl!)) return Icons.pause;
+                    if (DownloadManager().isFileDownloading(widget.gameInfoModel.downloadUrl)) return Icons.pause;
 
                     return !widget.gameInfoModel.isdownloaded! || widget.gameInfoModel.isdownloaded == null
                         ? Icons.download
@@ -223,12 +225,30 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Padding(
-                    padding: EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 12.0, 4.0),
-                    child: FaIcon(
-                      FontAwesomeIcons.folderOpen,
-                      color: FlutterFlowTheme.of(context).secondaryText,
-                      size: 22.0,
+                  GestureDetector(
+                    onTap: () {
+                      var gameFileName = DownloadManager.getFilenNameFromGameInfo(widget.gameInfoModel).split(".zip").first;
+                      String gameFolderPath =
+                          ProcessHelper.formatPath("${ProcessHelper().gamesFolder}/${gameFileName}/extracted");
+
+                      // Uri _url = Uri.parse('file:${Directory.current.path}/${gameFolderPath}');
+                      // launchUrl(_url, mode: LaunchMode.externalApplication);
+                      String path = Uri.parse('${Directory.current.path}/${gameFolderPath}').toString();
+                      print(path);
+                      Process.run(
+                        "start",
+                        [path],
+                        // workingDirectory: path,
+                        runInShell: true,
+                      );
+                    },
+                    child: Padding(
+                      padding: EdgeInsetsDirectional.fromSTEB(4.0, 4.0, 12.0, 4.0),
+                      child: FaIcon(
+                        FontAwesomeIcons.folderOpen,
+                        color: FlutterFlowTheme.of(context).secondaryText,
+                        size: 22.0,
+                      ),
                     ),
                   ),
                   GestureDetector(
@@ -306,7 +326,7 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
               ),
             ),
           ),
-          if (DownloadManager().getDownloadProcess(widget.gameInfoModel.downloadUrl!) != null)
+          if (DownloadManager().getDownloadProcess(widget.gameInfoModel.downloadUrl) != null)
             StreamBuilder<String>(
                 stream: DownloadManager().getDownloadProcess(widget.gameInfoModel.downloadUrl!)?.stdout,
                 builder: (context, snapshot) {

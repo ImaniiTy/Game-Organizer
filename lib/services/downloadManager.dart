@@ -41,11 +41,11 @@ class DownloadManager {
     downloadsList.remove(downloadUrl);
   }
 
-  bool isFileDownloading(String downloadUrl) {
+  bool isFileDownloading(String? downloadUrl) {
     return downloadsList.containsKey(downloadUrl);
   }
 
-  DownloadProcess? getDownloadProcess(String downloadUrl) {
+  DownloadProcess? getDownloadProcess(String? downloadUrl) {
     return downloadsList[downloadUrl];
   }
 

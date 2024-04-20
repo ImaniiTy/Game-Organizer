@@ -46,14 +46,14 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
         return await _model.onNavigationRequest(webviewController!, request);
       },
       onPageStarted: (url) async {
-        print("onPageStarted: $url");
-        var cookies = await webviewController!.runJavaScriptReturningResult('document.cookie');
-        if (!cookies.toString().contains("xf_session")) {
-          var userSession = LocalStorage().getItem("cookies").firstWhere((cookie) => cookie["name"] == "xf_session");
-          await webviewController!
-              .runJavaScriptReturningResult('document.cookie = "xf_session=${userSession["value"]};" + document.cookie');
-          webviewController!.reload();
-        }
+        // print("onPageStarted: $url");
+        // var cookies = await webviewController!.runJavaScriptReturningResult('document.cookie');
+        // if (!cookies.toString().contains("xf_session")) {
+        //   var userSession = LocalStorage().getItem("cookies").firstWhere((cookie) => cookie["name"] == "xf_session");
+        //   await webviewController!
+        //       .runJavaScriptReturningResult('document.cookie = "xf_session=${userSession["value"]};" + document.cookie');
+        //   webviewController!.reload();
+        // }
       },
       onPageFinished: (url) {
         // _webviewController!
@@ -64,6 +64,14 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
       },
       onWebResourceError: (error) => print("onWebResourceError: ${error.description}"),
     ));
+    // var sessionCookie = LocalStorage().getItem("cookies").firstWhere((cookie) => cookie["name"] == "xf_session");
+
+    if (LocalStorage().getItem("cookies") != null) {
+      for (var cookie in LocalStorage().getItem("cookies")) {
+        webviewController!.addCookie(cookie["name"], cookie["value"], cookie["domain"], cookie["path"]);
+      }
+    }
+
     webviewController!.loadRequest(Uri.parse(widget.params?["initialUrl"] ?? "https://f95zone.to/sam/latest_alpha/"));
   }
 
