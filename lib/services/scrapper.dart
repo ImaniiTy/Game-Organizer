@@ -42,7 +42,7 @@ class Scrapper {
     gameInfoJson["version"] = titleMaches[1];
     gameInfoJson["author"] = titleMaches[2];
 
-    gameInfoJson["thumbnailUrl"] = parser.querySelector(".bbWrapper img").src;
+    gameInfoJson["thumbnailUrl"] = parser.querySelector(".bbWrapper a").href;
 
     return GameInfoModel.fromMap(gameInfoJson);
   }
