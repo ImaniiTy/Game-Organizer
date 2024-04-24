@@ -21,7 +21,16 @@ class SessionManager {
   }
 
   String getSessionAsString() {
-    var f95UserSession = LocalStorage().getItem("cookies").firstWhere((cookie) => cookie["name"] == "xf_session");
-    return "xf_session=${f95UserSession["value"]};${gofileUserSession ?? ""}";
+    // var f95UserSession = LocalStorage().getItem("cookies").firstWhere((cookie) => cookie["name"] == "xf_session");
+    var f95UserCookies = LocalStorage().getItem("cookies");
+    StringBuffer strBuffer = StringBuffer();
+
+    for (var cookie in f95UserCookies) {
+      strBuffer.write("${cookie["name"]}=${cookie["value"]};");
+    }
+
+    if (gofileUserSession != null) strBuffer.write(gofileUserSession);
+
+    return strBuffer.toString();
   }
 }
