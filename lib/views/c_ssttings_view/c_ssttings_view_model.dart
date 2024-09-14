@@ -23,6 +23,8 @@ class CSsttingsViewModel extends FlutterFlowModel<CSsttingsViewWidget> {
   // State field(s) for TextField widget.
   TextEditingController? textController2;
   String? Function(BuildContext, String?)? textController2Validator;
+  // State field(s) for TextField widget.
+  TextEditingController? textController3;
 
   /// Initialization and disposal methods.
 
@@ -31,6 +33,7 @@ class CSsttingsViewModel extends FlutterFlowModel<CSsttingsViewWidget> {
   void dispose() {
     textController1?.dispose();
     textController2?.dispose();
+    textController3?.dispose();
   }
 
   /// Action blocks are added here.
@@ -40,10 +43,14 @@ class CSsttingsViewModel extends FlutterFlowModel<CSsttingsViewWidget> {
     ClipboardData? clipboardData = await Clipboard.getData(Clipboard.kTextPlain);
 
     try {
-      LocalStorage().setItem(Collections.cookies.name, json.decode(clipboardData?.text ?? "{}"));
+      saveOnLocalStorage(Collections.cookies.name, json.decode(clipboardData?.text ?? "{}"));
     } catch (e) {
       log("Failed to decode ${clipboardData?.text}");
     }
+  }
+
+  Future<void> saveOnLocalStorage(String key, String value) async {
+    await LocalStorage().setItem(key, value);
   }
 
   Future<void> cleanTempFolder() async {

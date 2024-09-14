@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chaleno/chaleno.dart';
 import 'package:game_organizer/models/gameInfo.model.dart';
 import 'package:game_organizer/services/localStorage.dart';
@@ -56,28 +58,37 @@ class Scrapper {
   Future<String?> getRealDownloadUrl(String url) async {
     var browser = await puppeteer.launch();
     var page = await browser.newPage();
-    await stopRedirections(page);
-    await setPageCookies(page);
-    await page.goto(url);
-
-    var uri = Uri.parse(url);
-
-    if (uri.host == "f95zone.to" && uri.path.contains("masked")) {
-      uri = Uri.parse(await parseMaskedLink(page));
-    }
-
     String? result;
-    switch (uri.host) {
-      case "gofile.io":
-        result = await fromGoFile(page);
-        break;
-      case "pixeldrain.com":
-        result = fromPixeldrain(uri);
-        break;
-      default:
-    }
+    try {
+      await stopRedirections(page);
+      await setPageCookies(page);
+      await page.goto(url);
 
-    browser.close();
+      var uri = Uri.parse(url);
+
+      if (uri.host == "f95zone.to" && uri.path.contains("masked")) {
+        uri = Uri.parse(await parseMaskedLink(page));
+      }
+
+      switch (uri.host) {
+        case "gofile.io":
+          try {
+            result = await fromGoFileNew(page);
+            Uri.parse(result ?? "");
+          } catch (e) {
+            result = await fromGoFile(page);
+          }
+          break;
+        case "pixeldrain.com":
+          result = fromPixeldrain(uri);
+          break;
+        default:
+      }
+    } catch (e) {
+      throw e;
+    } finally {
+      browser.close();
+    }
 
     return result;
   }
@@ -93,6 +104,30 @@ class Scrapper {
     page.close();
     var parser = Parser(pageContent);
     return parser.querySelector("#filesContentTableContent").querySelector(".dropdown-item")?.href;
+  }
+
+  Future<String?> fromGoFileNew(Page page) async {
+    await page.waitForSelector(".contentName");
+    var cookies = await page.cookies();
+    if (cookies.isNotEmpty) {
+      SessionManager().gofileUserSession = "${cookies[0].name}=${cookies[0].value}";
+    }
+
+    page.close();
+
+    Uri pageUri = Uri.parse(page.url!);
+    String goFileWt = LocalStorage().getItem("goFileWt") ?? "4fd6sg89d7s6";
+
+    print("Bearer ${SessionManager().gofileUserSession}");
+    var apiResponse = (await http.get(
+      Uri.parse("https://api.gofile.io/contents/${pageUri.pathSegments[1]}?wt=$goFileWt"),
+      headers: {"Authorization": "Bearer ${SessionManager().gofileUserSession?.split("=").last}"},
+    ))
+        .body;
+    Map fileInfo = jsonDecode(apiResponse)["data"];
+
+    String? result = fileInfo["children"].values.first["link"];
+    return result;
   }
 
   String fromPixeldrain(Uri uri) {

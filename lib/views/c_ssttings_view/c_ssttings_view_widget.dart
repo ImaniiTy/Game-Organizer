@@ -30,6 +30,7 @@ class _CSsttingsViewWidgetState extends State<CSsttingsViewWidget> {
 
     _model.textController1 ??= TextEditingController();
     _model.textController2 ??= TextEditingController();
+    _model.textController3 ??= TextEditingController();
   }
 
   @override
@@ -147,6 +148,61 @@ class _CSsttingsViewWidgetState extends State<CSsttingsViewWidget> {
                 ),
                 style: FlutterFlowTheme.of(context).bodyMedium,
                 validator: _model.textController2Validator.asValidator(context),
+              ),
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
+                child: Text(
+                  'GoFile wt',
+                  style: FlutterFlowTheme.of(context).bodyMedium,
+                ),
+              ),
+              TextFormField(
+                controller: _model.textController3,
+                autofocus: true,
+                obscureText: false,
+                onEditingComplete: () {
+                  _model.saveOnLocalStorage("goFileWt", _model.textController3.text);
+                },
+                onSaved: (_) {
+                  _model.saveOnLocalStorage("goFileWt", _model.textController3.text);
+                },
+                onChanged: (value) {
+                  _model.saveOnLocalStorage("goFileWt", value);
+                },
+                decoration: InputDecoration(
+                  labelStyle: FlutterFlowTheme.of(context).labelMedium,
+                  hintText: '4fd6sg89d7s6',
+                  hintStyle: FlutterFlowTheme.of(context).labelMedium,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).alternate,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).primary,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).error,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: FlutterFlowTheme.of(context).error,
+                      width: 2.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                style: FlutterFlowTheme.of(context).bodyMedium,
               ),
               Padding(
                 padding: EdgeInsetsDirectional.fromSTEB(0.0, 16.0, 0.0, 0.0),
