@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "Game Organizer" "\0"
-            VALUE "FileDescription", "A new Flutter project." "\0"
+            VALUE "CompanyName", "com.imaniity" "\0"
+            VALUE "FileDescription", "game_organizer" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "Game Organizer" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2022 Game Organizer. All rights reserved." "\0"
+            VALUE "InternalName", "game_organizer" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 com.imaniity. All rights reserved." "\0"
             VALUE "OriginalFilename", "game_organizer.exe" "\0"
-            VALUE "ProductName", "Game Organizer" "\0"
+            VALUE "ProductName", "game_organizer" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
