@@ -41,6 +41,7 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
     super.initState();
     _model = createModel(context, () => CWebViewModel());
     webviewController = WinWebViewController("/userDataTemp");
+    webviewController!.setBackgroundColor(Color(0xFF181a1d));
     webviewController!.setJavaScriptMode(JavaScriptMode.unrestricted);
     webviewController!.setNavigationDelegate(WinNavigationDelegate(
       onNavigationRequest: (request) async {
