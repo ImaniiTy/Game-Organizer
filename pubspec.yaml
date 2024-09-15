@@ -76,7 +76,7 @@ dev_dependencies:
 flutter_launcher_icons:
     windows:
       generate: true
-      image_path: "F:/Workspaces/Flutter-Workspace/Game-Organizer/assetsicon.png"
+      image_path: "F:/Workspaces/Flutter-Workspace/Game-Organizer/assets/icon.png"
       icon_size: 48 # min:48, max:256, default: 48
 
 # For information on the generic Dart part of this file, see the
