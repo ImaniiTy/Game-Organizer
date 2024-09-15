@@ -60,25 +60,31 @@ class CoreService {
       var gameFolder = DownloadManager.getFilenNameFromGameInfo(gameInfoModel).split(".zip").first;
       var gameFilesPath = "${ProcessHelper().gamesFolder}/$gameFolder";
 
-      var unzipProcess = await ProcessHelper().unzipFile(
-        sourceFileName: DownloadManager.getFilenNameFromGameInfo(
-          gameInfoModel,
-          withVersion: true,
-        ),
-        destFileName: DownloadManager.getFilenNameFromGameInfo(
-          gameInfoModel,
-          withVersion: false,
-        ),
+      String sourceFileName = DownloadManager.getFilenNameFromGameInfo(
+        gameInfoModel,
+        withVersion: true,
+      );
+
+      try {
+        await ProcessHelper().deleteFolder(ProcessHelper.formatPath("${gameFilesPath}/temp"));
+      } catch (e) {}
+
+      var unzipProcess = await DownloadManager().startUnzip(
+        sourceFilePath: "${ProcessHelper().tempFolder}/${sourceFileName}",
+        destFilePath: "${gameFilesPath}/temp",
       );
 
       unzipProcess?.stdout.listen(log);
-      unzipProcess?.stderr.listen(log);
 
-      var result = await unzipProcess.waitExitCode;
+      var result = await unzipProcess?.waitExitCode;
 
       log(result.toString());
 
       if (result == 0) {
+        try {
+          ProcessHelper().deleteFile("${ProcessHelper().tempFolder}/${sourceFileName}");
+        } catch (e) {}
+
         try {
           await ProcessHelper().deleteFolder("$gameFilesPath/old");
         } catch (e) {}

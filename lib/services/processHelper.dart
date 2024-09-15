@@ -23,47 +23,65 @@ class ProcessHelper {
   String get gamesFolder => LocalStorage().getItem("gamesFolder") ?? KGAMES_FOLDER;
   String get tempFolder => LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER;
 
-  Future<Process> runCommand({String dest = "", String userAgent = "", String args = "", String program = "aria2c.exe"}) async {
+  Future<Process> runCommand({
+    String dest = "",
+    String userAgent = "",
+    String args = "",
+    String program = "aria2c.exe",
+    bool runInShell = false,
+    bool detached = false,
+  }) async {
     var argsList = args.split(" ");
     // argsList[argsList.indexWhere((element) => element == "%{dest}")] = dest;
     // argsList[argsList.indexWhere((element) => element == "%{userAgent}")] = userAgent;
     print("Run with command: $program ${argsList.join(' ')}");
-    return await Process.start(program, argsList);
+    return await Process.start(
+      program,
+      argsList,
+      runInShell: runInShell,
+      mode: detached ? ProcessStartMode.detached : ProcessStartMode.normal,
+    );
   }
 
-  Future<DownloadProcess> downloadFile({required String url, String? fileName}) async {
+  Future<DownloadProcess> downloadFile({required String url, String? fileName, String? folderPath}) async {
     Uri uri = Uri.parse(url);
     String? referer = getReferer(uri);
     String cookies = "cookie:${SessionManager().getSessionAsString()}";
 
     var sourceProcess = await runCommand(
       args:
-          '-d ${LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER} -o $fileName --header=$cookies -x 10 -s 10 -m 20 ${uri.toString()}',
-    );
-
-    return DownloadProcess(source: sourceProcess);
-  }
-
-  Future<DownloadProcess> unzipFile({required String sourceFileName, required String destFileName}) async {
-    try {
-      await deleteFolder(formatPath("${gamesFolder}/${destFileName.split(".zip").first}/temp"));
-    } catch (e) {}
-
-    var sourceProcess = await runCommand(
-      program: "7z.exe",
-      args: 'x ${tempFolder}/${sourceFileName} -o${gamesFolder}/${destFileName.split(".zip").first}/temp -y',
+          '-d ${folderPath ?? LocalStorage().getItem("tempFolder") ?? KTEMP_FOLDER} -o $fileName --header=$cookies -x 10 -s 10 -m 20 ${uri.toString()}',
     );
 
     return DownloadProcess(
       source: sourceProcess,
-      onFinished: () {
-        deleteFile(formatPath("${tempFolder}/${sourceFileName}"));
+      statusParser: (String stdout) {
+        if (stdout.contains("ETA")) {
+          return DownloadStatus.fromString(stdout);
+        }
+      },
+    );
+  }
+
+  Future<DownloadProcess> unzipFile({required String sourceFilePath, required String destFilePath}) async {
+    var sourceProcess = await runCommand(
+      program: "7z.exe",
+      args: 'x ${sourceFilePath} -o${destFilePath} -y',
+    );
+
+    return DownloadProcess(
+      source: sourceProcess,
+      statusParser: (String stdout) {
+        // var match = RegExp(r"([0-9]+)%").firstMatch(stdout);
+
+        // return match?[0] != null ? int.parse(match![0]!.split("%")[0]) : null;
+        return !stdout.contains("Everything is Ok") ? "Extracting..." : null;
       },
     );
   }
 
   Future<void> runExecutable(String path) async {
-    await runCommand(program: path);
+    await runCommand(program: path, detached: true);
   }
 
   Future<void> deleteFile(String path) async {
@@ -109,21 +127,22 @@ class ProcessHelper {
 
 class DownloadProcess {
   Process source;
-  Function? onFinished;
+  Function? statusParser;
 
   late Future<int> waitExitCode;
+
+  Future<int> get finishedFuture => waitExitCode;
 
   late Stream<String> stdout = source.stdout.transform(utf8.decoder).asBroadcastStream();
   late Stream<String> stderr = source.stderr.transform(utf8.decoder).asBroadcastStream();
 
+  Stream<dynamic> get statusStream => statusParser != null ? stdout.map((event) => statusParser?.call(event)) : stdout;
+
   DownloadProcess({
     required this.source,
-    this.onFinished,
+    this.statusParser,
   }) {
     this.waitExitCode = this.source.exitCode;
-    this.source.exitCode.then((value) {
-      if (value == 0) this.onFinished?.call();
-    });
   }
 }
 

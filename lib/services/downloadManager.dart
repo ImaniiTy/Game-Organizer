@@ -1,4 +1,5 @@
 import 'package:game_organizer/models/gameInfo.model.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'processHelper.dart';
 
@@ -12,24 +13,54 @@ class DownloadManager {
   DownloadManager._internal();
 
   Map<String, DownloadProcess> downloadsList = {};
+  BehaviorSubject<Map<String, DownloadProcess>> downloadsStream = BehaviorSubject.seeded({});
 
   Future<DownloadProcess?> startDownload(
     String? downloadUrl, {
     String? fileName,
+    String? folderPath,
   }) async {
     if (downloadUrl == null) return null;
 
-    if (!downloadsList.containsKey(downloadUrl)) {
-      downloadsList[downloadUrl] = await ProcessHelper().downloadFile(
+    if (!downloadsStream.value.containsKey(downloadUrl)) {
+      Map<String, DownloadProcess> newMap = Map.from(downloadsStream.value);
+      newMap[downloadUrl] = await ProcessHelper().downloadFile(
         url: downloadUrl,
         fileName: fileName,
+        folderPath: folderPath,
       )
-        ..onFinished = () {
-          removeFileFromList(downloadUrl);
-        };
+        ..finishedFuture.then((value) {
+          removeFileFromStream(downloadUrl);
+        });
+      downloadsStream.add(newMap);
     }
 
-    return downloadsList[downloadUrl];
+    return downloadsStream.value[downloadUrl];
+
+    // if (!downloadsList.containsKey(downloadUrl)) {
+    //   downloadsList[downloadUrl] = await ProcessHelper().downloadFile(
+    //     url: downloadUrl,
+    //     fileName: fileName,
+    //   )
+    //     ..onFinished = () {
+    //       removeFileFromList(downloadUrl);
+    //     };
+    // }
+
+    // return downloadsList[downloadUrl];
+  }
+
+  Future<DownloadProcess?> startUnzip({required String sourceFilePath, required String destFilePath}) async {
+    if (!downloadsStream.value.containsKey(sourceFilePath)) {
+      Map<String, DownloadProcess> newMap = Map.from(downloadsStream.value);
+      newMap[sourceFilePath] = await ProcessHelper().unzipFile(sourceFilePath: sourceFilePath, destFilePath: destFilePath)
+        ..finishedFuture.then((value) {
+          removeFileFromStream(sourceFilePath);
+        });
+      downloadsStream.add(newMap);
+    }
+
+    return downloadsStream.value[sourceFilePath];
   }
 
   Future<void> stopDownload(String downloadUrl) async {
@@ -39,6 +70,13 @@ class DownloadManager {
 
   void removeFileFromList(String downloadUrl) {
     downloadsList.remove(downloadUrl);
+  }
+
+  void removeFileFromStream(String downloadUrl) {
+    Map<String, DownloadProcess> newMap = Map.from(downloadsStream.value);
+    newMap.remove(downloadUrl);
+
+    downloadsStream.add(newMap);
   }
 
   bool isFileDownloading(String? downloadUrl) {

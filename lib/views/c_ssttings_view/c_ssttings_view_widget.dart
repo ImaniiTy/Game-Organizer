@@ -1,3 +1,7 @@
+import 'dart:developer';
+
+import 'package:game_organizer/services/downloadManager.dart';
+
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
@@ -250,6 +254,38 @@ class _CSsttingsViewWidgetState extends State<CSsttingsViewWidget> {
                     await _model.cleanTempFolder();
                   },
                   text: 'Clean Temp Folder',
+                  showLoadingIndicator: true,
+                  options: FFButtonOptions(
+                    height: 40.0,
+                    padding: EdgeInsetsDirectional.fromSTEB(24.0, 0.0, 24.0, 0.0),
+                    iconPadding: EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 0.0),
+                    color: FlutterFlowTheme.of(context).primary,
+                    textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                          fontFamily: 'Readex Pro',
+                          color: Colors.white,
+                        ),
+                    elevation: 3.0,
+                    borderSide: BorderSide(
+                      color: Colors.transparent,
+                      width: 1.0,
+                    ),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsetsDirectional.fromSTEB(0.0, 8.0, 0.0, 0.0),
+                child: FFButtonWidget(
+                  onPressed: () async {
+                    // var unzipProcess = await DownloadManager().startUnzip(
+                    //   sourceFileName: "DinnerwithNatsuki-223551-v1.0.0.zip",
+                    //   destFileName: "test",
+                    // );
+
+                    // unzipProcess?.statusStream.listen((event) => log(event as String));
+                    // unzipProcess?.stderr.listen(log);
+                  },
+                  text: 'test zip',
                   showLoadingIndicator: true,
                   options: FFButtonOptions(
                     height: 40.0,

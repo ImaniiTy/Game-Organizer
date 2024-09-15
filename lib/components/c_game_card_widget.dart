@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:game_organizer/models/gameInfo.model.dart';
 import 'package:game_organizer/services/coreService.dart';
 import 'package:game_organizer/services/downloadManager.dart';
+import 'package:game_organizer/services/externalTools/universalCheat.dart';
 import 'package:game_organizer/services/localStorage.dart';
 import 'package:game_organizer/services/navigation/navigation.dart';
 import 'package:game_organizer/services/processHelper.dart';
@@ -354,10 +355,13 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                         );
                       },
                     ),
-                    MenuItemButton(
-                      child: Text("Add 0x52"),
-                      onPressed: () {},
-                    ),
+                    if (widget.gameInfoModel.engine == "Ren'Py")
+                      MenuItemButton(
+                        child: Text("Add 0x52"),
+                        onPressed: () {
+                          UniversalCheat().tryInstall(widget.gameInfoModel);
+                        },
+                      ),
                   ],
                   builder: (context, controller, child) {
                     return Padding(
@@ -384,38 +388,84 @@ class _CGameCardWidgetState extends State<CGameCardWidget> {
                 ),
               ),
             ),
-            if (DownloadManager().getDownloadProcess(widget.gameInfoModel.downloadUrl) != null)
-              StreamBuilder<String>(
-                  stream: DownloadManager().getDownloadProcess(widget.gameInfoModel.downloadUrl!)?.stdout,
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) log(snapshot.data!);
-                    if (!snapshot.hasData || !snapshot.data!.contains("ETA")) {
-                      return Container();
-                    }
-
-                    DownloadStatus downloadStatus = DownloadStatus.fromString(snapshot.data!);
-                    return Align(
-                      alignment: AlignmentDirectional(-1.0, 0),
-                      child: Padding(
-                        padding: EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 0.0, 0.0),
-                        child: Container(
-                          width: 180,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.green.shade900, Colors.black87],
-                              stops: List.generate(2, (index) => double.parse(downloadStatus.currentPercent) / 100),
-                              tileMode: TileMode.clamp,
+            StreamBuilder<Map<String, DownloadProcess>>(
+              stream: DownloadManager().downloadsStream,
+              builder: (BuildContext context, snapshot) {
+                String downloadUrl = widget.gameInfoModel.downloadUrl!;
+                if (snapshot.data?[downloadUrl] != null) {
+                  DownloadStatus? downloadStatus;
+                  return StreamBuilder(
+                    stream: snapshot.data![downloadUrl]!.statusStream,
+                    builder: (BuildContext context, downloadSnapshot) {
+                      downloadStatus = downloadSnapshot.hasData ? downloadSnapshot.data! as DownloadStatus : downloadStatus;
+                      if (downloadStatus == null) return Container();
+                      return Align(
+                        alignment: AlignmentDirectional(-1.0, 0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 0.0, 0.0),
+                          child: Container(
+                            width: 180,
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [Colors.green.shade900, Colors.black87],
+                                stops: List.generate(2, (index) => double.parse(downloadStatus!.currentPercent) / 100),
+                                tileMode: TileMode.clamp,
+                              ),
+                              borderRadius: BorderRadius.circular(5.0),
                             ),
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                            child: Text("${downloadStatus.downloadSpeed}s ETA:${downloadStatus.eta}"),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                              child: Text("${downloadStatus!.downloadSpeed}s ETA:${downloadStatus!.eta}"),
+                            ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    },
+                  );
+                }
+                String fileName = DownloadManager.getFilenNameFromGameInfo(
+                  widget.gameInfoModel,
+                  withVersion: true,
+                );
+                if (snapshot.data?[fileName] != null) {
+                  String? unzipStatus;
+                  return StreamBuilder(
+                    stream: snapshot.data![fileName]!.statusStream,
+                    builder: (BuildContext context, unzipSnapshot) {
+                      unzipStatus = unzipSnapshot.hasData ? unzipSnapshot.data! as String : unzipStatus;
+                      if (unzipStatus == null) return Container();
+                      return Align(
+                        alignment: AlignmentDirectional(-1.0, 0),
+                        child: Padding(
+                          padding: EdgeInsetsDirectional.fromSTEB(12.0, 12.0, 0.0, 0.0),
+                          child: Container(
+                            width: 180,
+                            color: Colors.black87,
+                            // decoration: BoxDecoration(
+                            //   gradient: LinearGradient(
+                            //     colors: [Colors.green.shade900, Colors.black87],
+                            //     stops: List.generate(2, (index) => unzipStatus!.toDouble() / 100),
+                            //     tileMode: TileMode.clamp,
+                            //   ),
+                            //   borderRadius: BorderRadius.circular(5.0),
+                            // ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                              child: Text(
+                                "${unzipStatus}",
+                                style: TextStyle(color: Colors.white70),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+
+                return Container();
+              },
+            ),
           ],
         ),
       ),

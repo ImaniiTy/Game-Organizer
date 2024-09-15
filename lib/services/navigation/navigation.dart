@@ -17,11 +17,20 @@ class Navigation {
   get homeView => CMyGamesViewWidget();
 
   late final BehaviorSubject<NavigationContext> navigationStream;
+  final List<String> breadcrumbs = ["/MyGames"];
 
   void goTo(String name, {Map<String, String>? params}) {
     if (Routes.names[name] != null) {
       Routes.names[name]!.params = params;
+      breadcrumbs.add(name);
       navigationStream.add(Routes.names[name]!);
+    }
+  }
+
+  void goBack() {
+    if (breadcrumbs.length > 1) {
+      breadcrumbs.removeLast();
+      navigationStream.add(Routes.names[breadcrumbs.last]!);
     }
   }
 }

@@ -229,7 +229,12 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                         size: 24.0,
                       ),
                       onPressed: () async {
-                        if (webviewController != null && await webviewController!.canGoBack()) webviewController!.goBack();
+                        if (await webviewController?.currentUrl() == "https://f95zone.to/sam/latest_alpha/") {
+                          Navigation().goBack();
+                        }
+                        if (webviewController != null && await webviewController!.canGoBack()) {
+                          webviewController!.goBack();
+                        }
                       },
                     ),
                   ),

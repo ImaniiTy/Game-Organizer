@@ -33,7 +33,14 @@ class Scrapper {
 
   GameInfoModel extractGameInfo(Parser parser) {
     var gameInfoJson = <String, dynamic>{};
-    gameInfoJson["engine"] = parser.querySelector(".p-title-value span").text;
+
+    try {
+      gameInfoJson["engine"] = parser.querySelectorAll(".p-title-value span").firstWhere((element) {
+        return ["Ren'Py", "RPGM", "HTML", "Unity", "Unreal Engine"].contains(element.text);
+      }).text;
+    } catch (e) {
+      gameInfoJson["engine"] = "Other";
+    }
 
     RegExp expNode = RegExp(r'.+<\/span>(.*)$');
     var titleNode = expNode.firstMatch(parser.querySelector(".p-title-value").innerHTML!)!.group(1);
