@@ -32,6 +32,7 @@ class CWebViewModel extends FlutterFlowModel {
   Future<NavigationDecision> onNavigationRequest(WinWebViewController webviewController, NavigationRequest request) async {
     var currentUrl = await webviewController.currentUrl() ?? "";
     bool isADownloadUrl = Scrapper.supportedHosts.any((element) => request.url.contains(element));
+    print("request: ${request.url}");
     if (currentUrl.contains("f95zone.to/threads") && isADownloadUrl) {
       gameInfoFetchFuture.add(FetchStatus.running);
       CoreService().addGameAndStartDownload(currentUrl, request.url).then((_) {
@@ -39,6 +40,7 @@ class CWebViewModel extends FlutterFlowModel {
         Future.delayed(Duration(seconds: 2)).then((_) => gameInfoFetchFuture.add(FetchStatus.none));
       });
       // Navigation().goTo("/MyGames");
+
       return NavigationDecision.prevent;
     } else {
       return NavigationDecision.navigate;

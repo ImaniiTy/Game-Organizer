@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:game_organizer/services/navigation/navigation.dart';
 import 'package:game_organizer/views/c_my_games_view/c_my_games_view_widget.dart';
 import 'package:game_organizer/views/c_ssttings_view/c_ssttings_view_widget.dart';
@@ -229,11 +231,13 @@ class _CMenuWidgetState extends State<CMenuWidget> {
                         size: 24.0,
                       ),
                       onPressed: () async {
-                        if (await webviewController?.currentUrl() == "https://f95zone.to/sam/latest_alpha/") {
-                          Navigation().goBack();
-                        }
-                        if (webviewController != null && await webviewController!.canGoBack()) {
-                          webviewController!.goBack();
+                        bool canGoBack = await webviewController!.canGoBack();
+                        if (webviewController != null) {
+                          if (!canGoBack || webviewController!.currentUrl() == "https://f95zone.to/sam/latest_alpha/") {
+                            Navigation().goBack();
+                          } else {
+                            await webviewController!.goBack();
+                          }
                         }
                       },
                     ),

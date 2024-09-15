@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:game_organizer/services/navigation/navigation.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -63,6 +64,12 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
         // });
       },
       onWebResourceError: (error) => print("onWebResourceError: ${error.description}"),
+      onHistoryChanged: () async {
+        String? currentUrl = await webviewController?.currentUrl();
+        if (currentUrl == "about:blank") {
+          Navigation().goBack();
+        }
+      },
     ));
     // var sessionCookie = LocalStorage().getItem("cookies").firstWhere((cookie) => cookie["name"] == "xf_session");
 
