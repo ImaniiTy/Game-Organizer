@@ -10,11 +10,15 @@ class SessionManager {
   SessionManager._internal();
 
   String? _gofileUserSession;
-  String? get gofileUserSession => _gofileUserSession ?? LocalStorage().getItem("gofileUserSession");
+  String? get gofileUserSession => _gofileUserSession ?? LocalStorage().getItem("accountToken");
   set gofileUserSession(String? value) {
     _gofileUserSession = value;
-    LocalStorage().setItem("gofileUserSession", _gofileUserSession);
+    LocalStorage().setItem("accountToken", _gofileUserSession);
   }
+
+  String downloadCookies = "";
+
+  void setDownloadCookies(String value) => downloadCookies = value;
 
   Map<String, String> getSessionAsMap() {
     return {"cookie": getSessionAsString()};

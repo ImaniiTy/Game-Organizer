@@ -25,7 +25,8 @@ class CoreService {
     var gamePageUri = Uri.parse(gamePageUrl);
 
     var gamePage = await Scrapper().getPageParser(gamePageUrl);
-    var realDownloadLink = await Scrapper().getRealDownloadUrl(downloadUrl);
+    // var realDownloadLink = await Scrapper().getRealDownloadUrl(downloadUrl);
+    var realDownloadLink = downloadUrl;
 
     var gameInfoModel = Scrapper().extractGameInfo(gamePage!);
 

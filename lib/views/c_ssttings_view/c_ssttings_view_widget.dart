@@ -165,13 +165,13 @@ class _CSsttingsViewWidgetState extends State<CSsttingsViewWidget> {
                 autofocus: true,
                 obscureText: false,
                 onEditingComplete: () {
-                  _model.saveOnLocalStorage("goFileWt", _model.textController3.text);
+                  _model.saveOnLocalStorage("accountToken", _model.textController3.text);
                 },
                 onSaved: (_) {
-                  _model.saveOnLocalStorage("goFileWt", _model.textController3.text);
+                  _model.saveOnLocalStorage("accountToken", _model.textController3.text);
                 },
                 onChanged: (value) {
-                  _model.saveOnLocalStorage("goFileWt", value);
+                  _model.saveOnLocalStorage("accountToken", value);
                 },
                 decoration: InputDecoration(
                   labelStyle: FlutterFlowTheme.of(context).labelMedium,

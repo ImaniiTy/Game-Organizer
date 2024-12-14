@@ -41,6 +41,12 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
     super.initState();
     _model = createModel(context, () => CWebViewModel());
     webviewController = WinWebViewController("/userDataTemp");
+    webviewController!.addJavaScriptChannel(
+      "downladHandler",
+      callback: (message) {
+        print(message.message);
+      },
+    );
     webviewController!.setBackgroundColor(Color(0xFF181a1d));
     webviewController!.setJavaScriptMode(JavaScriptMode.unrestricted);
     webviewController!.setNavigationDelegate(WinNavigationDelegate(
@@ -57,7 +63,7 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
         //   webviewController!.reload();
         // }
       },
-      onPageFinished: (url) {
+      onPageFinished: (url) async {
         // _webviewController!
         //     .runJavaScriptReturningResult('document.cookie = "xf_session=3N8gaDLNywymFfDOHTNZZsV_k8tbz3h0;" + document.cookie')
         //     .then((value) {
@@ -70,6 +76,11 @@ class _CWebViewWidgetState extends State<CWebViewWidget> {
         if (currentUrl == "about:blank") {
           Navigation().goBack();
         }
+      },
+      onDownloadStarted: (downloadOperation) async {
+        var cookieResult = await webviewController?.runJavaScriptReturningResult("document.cookie");
+        _model.onDownloadStarted(
+            webviewController!, downloadOperation.url, cookieResult?.toString().replaceAll('"', "").replaceAll(" ", "") ?? "");
       },
     ));
     // var sessionCookie = LocalStorage().getItem("cookies").firstWhere((cookie) => cookie["name"] == "xf_session");

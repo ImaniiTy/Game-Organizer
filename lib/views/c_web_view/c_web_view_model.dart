@@ -1,6 +1,7 @@
 import 'package:game_organizer/services/coreService.dart';
 import 'package:game_organizer/services/navigation/navigation.dart';
 import 'package:game_organizer/services/scrapper.dart';
+import 'package:game_organizer/services/sessionManager.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_win_floating/webview.dart';
 
@@ -28,9 +29,30 @@ class CWebViewModel extends FlutterFlowModel {
   /// Action blocks are added here.
 
   /// Additional helper methods are added here.
+  String? lastThreadUrl;
 
+  // Future<NavigationDecision> onNavigationRequest(WinWebViewController webviewController, NavigationRequest request) async {
+  //   var currentUrl = await webviewController.currentUrl() ?? "";
+  //   bool isADownloadUrl = Scrapper.supportedHosts.any((element) => request.url.contains(element));
+  //   print("request: ${request.url}");
+  //   if (currentUrl.contains("f95zone.to/threads") && isADownloadUrl) {
+  //     gameInfoFetchFuture.add(FetchStatus.running);
+  //     CoreService().addGameAndStartDownload(currentUrl, request.url).then((_) {
+  //       gameInfoFetchFuture.add(FetchStatus.done);
+  //       Future.delayed(Duration(seconds: 2)).then((_) => gameInfoFetchFuture.add(FetchStatus.none));
+  //     });
+  //     // Navigation().goTo("/MyGames");
+
+  //     return NavigationDecision.prevent;
+  //   } else {
+  //     return NavigationDecision.navigate;
+  //   }
+  // }
   Future<NavigationDecision> onNavigationRequest(WinWebViewController webviewController, NavigationRequest request) async {
     var currentUrl = await webviewController.currentUrl() ?? "";
+    if (currentUrl.contains("f95zone.to/threads")) lastThreadUrl = currentUrl;
+
+    return NavigationDecision.navigate;
     bool isADownloadUrl = Scrapper.supportedHosts.any((element) => request.url.contains(element));
     print("request: ${request.url}");
     if (currentUrl.contains("f95zone.to/threads") && isADownloadUrl) {
@@ -44,6 +66,20 @@ class CWebViewModel extends FlutterFlowModel {
       return NavigationDecision.prevent;
     } else {
       return NavigationDecision.navigate;
+    }
+  }
+
+  Future<void> onDownloadStarted(WinWebViewController webviewController, String url, String downloadCookies) async {
+    print("OnDownloadStarted:${url}");
+    SessionManager().setDownloadCookies(downloadCookies);
+    if (lastThreadUrl != null) {
+      gameInfoFetchFuture.add(FetchStatus.running);
+      CoreService().addGameAndStartDownload(lastThreadUrl!, url).then((_) {
+        gameInfoFetchFuture.add(FetchStatus.done);
+        Future.delayed(Duration(seconds: 2)).then((_) => gameInfoFetchFuture.add(FetchStatus.none));
+      });
+
+      webviewController.loadRequest(Uri.parse(lastThreadUrl!));
     }
   }
 }

@@ -46,7 +46,7 @@ class ProcessHelper {
   Future<DownloadProcess> downloadFile({required String url, String? fileName, String? folderPath}) async {
     Uri uri = Uri.parse(url);
     String? referer = getReferer(uri);
-    String cookies = "cookie:${SessionManager().getSessionAsString()}";
+    String cookies = "cookie:${SessionManager().getSessionAsString()};${SessionManager().downloadCookies}";
 
     var sourceProcess = await runCommand(
       args:
